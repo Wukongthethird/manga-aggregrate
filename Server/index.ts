@@ -3,7 +3,10 @@ import express, { Request, Response, NextFunction } from "express";
 import corsConfig from "./src/configs/corsConfig";
 import cors from "cors";
 import dotenv from "dotenv";
+
+//middleware import
 import errorHandler from "./src/middlewares/errorHandler";
+import mangadexAPI from "./src/API/mangadexAPI";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -18,9 +21,16 @@ app.use(cors(corsConfig));
 app.use(express.json());
 
 // app.use(  json())
-app.get("/", (request: Request, response: Response, next: NextFunction) => {
-  response.status(200).send("Hello World");
-});
+app.get(
+  "/",
+  async (request: Request, response: Response, next: NextFunction) => {
+    await mangadexAPI.getMangadexTokens();
+
+    const res = await mangadexAPI.searchManga("Kichiku Eiyuu");
+    console.log("res", res?.data?.data);
+    response.status(200).send("Hello World");
+  }
+);
 
 app.use(errorHandler);
 
