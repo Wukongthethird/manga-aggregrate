@@ -29,6 +29,7 @@ export default class mangadexAPI {
   }
 
   static async getMangadexTokens() {
+    console.log("gmt");
     const creds = {
       grant_type: "password",
       username: process.env.MANGADEX_USERNAME,
@@ -49,6 +50,41 @@ export default class mangadexAPI {
       const { access_token, refresh_token } = res.data;
       this.access_token = access_token;
       this.refresh_token = refresh_token;
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+
+  static async refreshMangadexTokens() {
+    if (!this.refresh_token) {
+      await this.getMangadexTokens();
+      return;
+    }
+
+    const creds = {
+      grant_type: "refresh_token",
+      refresh_token: this.refresh_token,
+      client_id: process.env.MANGADEX_CLIENT_ID,
+      client_secret: process.env.MANGADEX_CLIENT_SECRET,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": process.env.USER_AGENT,
+      },
+    };
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: "https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token",
+        data: creds,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": process.env.USER_AGENT,
+        },
+      });
+      this.access_token = res?.data?.access_token;
+      this.refresh_token = res?.data.refresh_token;
+      console.log("success");
     } catch (error: any) {
       console.log(error);
     }
