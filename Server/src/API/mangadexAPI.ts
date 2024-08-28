@@ -11,7 +11,10 @@ export default class mangadexAPI {
   static refresh_token: string;
 
   static async request(endpoint = "", data = {}, method = "get") {
-    const headers = { "User-Agent": process.env.USER_AGENT };
+    const headers = {
+      "User-Agent": process.env.USER_AGENT,
+      Authorization: `Bearer ${this.access_token}`,
+    };
     const url = `${this.BASE_URL}/${endpoint}`;
     const params = method === "get" ? data : {};
 
@@ -19,7 +22,6 @@ export default class mangadexAPI {
       return await axios({
         url,
         method,
-        data,
         params,
         headers,
       });
@@ -51,7 +53,7 @@ export default class mangadexAPI {
       this.access_token = access_token;
       this.refresh_token = refresh_token;
     } catch (error: any) {
-      console.log(error);
+      console.log(error.data.errors);
     }
   }
 
@@ -84,19 +86,30 @@ export default class mangadexAPI {
       });
       this.access_token = res?.data?.access_token;
       this.refresh_token = res?.data.refresh_token;
-      console.log("success");
     } catch (error: any) {
       console.log(error);
     }
   }
 
-  static async getManga(id: string) {
+  static async getMangadexManga(id: string) {
     const res = await this.request(`manga/${id}`);
     return res;
   }
 
-  static async searchManga(title: string) {
+  static async searchMangadexManga(title: string) {
     const res = await this.request(`manga`, { title });
     return res;
+  }
+
+  static async getMangadexFeed() {
+    // res?.data?.data gives chapter id then with data -> relationships for group and manganame
+    const res = await this.request(`user/follows/manga/feed`, {
+      translatedLanguage: ["en"],
+      order: {
+        updatedAt: "desc",
+      },
+    });
+
+    console.log(res?.data?.data[0]);
   }
 }
