@@ -123,13 +123,17 @@ export default class mangadexAPI {
         const title = res[i]?.attributes?.title.en as string;
         const link = `https://mangadex.org/title/${id}` as string;
 
-        // const altTitles = res[i]?.attributes?.altTitles?.filter(title => title.en);
-        const altTitles: string[] = [];
-        for (let j = 0; j < res[i]?.attributes?.altTitles.length; j++) {
-          if ("en" in res[i]?.attributes?.altTitles[j]) {
-            altTitles.push(res[i]?.attributes?.altTitles[j].en);
-          }
-        }
+        const altTitles = res[i]?.attributes?.altTitles
+          ?.filter((title: { en: string }) => title.en)
+          .map((title: { en: string }) => title.en);
+
+        // const altTitles: string[] = [];
+
+        // for (let j = 0; j < res[i]?.attributes?.altTitles.length; j++) {
+        //   if ("en" in res[i]?.attributes?.altTitles[j]) {
+        //     altTitles.push(res[i]?.attributes?.altTitles[j].en);
+        //   }
+        // }
         response.push({ id, title, link, altTitles });
       }
     }
@@ -147,7 +151,7 @@ export default class mangadexAPI {
         readableAt: "desc",
         publishAt: "desc",
       },
-      publishAt: dateTime,
+      // publishAt: dateTime,
       readableAt: dateTime,
       limit: limit,
     });
