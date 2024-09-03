@@ -138,7 +138,7 @@ export default class mangadexAPI {
   }
 
   //like this "2024-08-29T23:20:50"
-  static async getMangadexFeed(dateTime: string) {
+  static async getMangadexFeed(limit: number, dateTime: string) {
     // res?.data?.data gives chapter id then with data -> relationships for group and manganame
     const res = await this.request(`user/follows/manga/feed`, {
       translatedLanguage: ["en"],
@@ -149,7 +149,7 @@ export default class mangadexAPI {
       },
       publishAt: dateTime,
       readableAt: dateTime,
-      limit: 20,
+      limit: limit,
     });
 
     // console.log(res?.data);
