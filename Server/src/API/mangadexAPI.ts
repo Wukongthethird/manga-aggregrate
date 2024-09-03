@@ -8,8 +8,13 @@ interface searchMangadexMangaInterface {
   title: string;
   link: string;
   altTitles: string[];
-
   //author and artist later if wanted
+}
+
+interface getMangadexFeedInterface {
+  chapterId: string;
+  chapterNumber: string;
+  mangaId: string;
 }
 
 export default class mangadexAPI {
@@ -115,7 +120,7 @@ export default class mangadexAPI {
       (res) => res?.data?.data
     );
 
-    const response = [];
+    const response: searchMangadexMangaInterface[] = [];
 
     if (res.length) {
       for (let i = 0; i < res.length; i++) {
@@ -137,12 +142,14 @@ export default class mangadexAPI {
         response.push({ id, title, link, altTitles });
       }
     }
-
     return response;
   }
 
-  //like this "2024-08-29T23:20:50"
-  static async getMangadexFeed(limit: number, dateTime: string) {
+  // date time should look like this  "2024-08-29T23:20:50"
+  static async getMangadexFeed(
+    limit: number,
+    dateTime: string
+  ): Promise<getMangadexFeedInterface[]> {
     // res?.data?.data gives chapter id then with data -> relationships for group and manganame
     const res = await this.request(`user/follows/manga/feed`, {
       translatedLanguage: ["en"],
@@ -151,16 +158,39 @@ export default class mangadexAPI {
         readableAt: "desc",
         publishAt: "desc",
       },
-      // publishAt: dateTime,
-      readableAt: dateTime,
+      publishAtSince: dateTime,
+      // updatedAtSince: dateTime,
       limit: limit,
-    });
+    }).then((res) => res?.data?.data);
 
-    // console.log(res?.data);
+    const response: getMangadexFeedInterface[] = [];
 
-    // date time should look like this  2024-08-12T23:20:50
-    // returns newest chapter maybe manga id and time of updates. proba want to compare last check is after last update to ping discord
-    // create return type
-    // console.log(res?.data?.data);
+    if (res) {
+      for (let i = 0; i < res.length; i++) {
+        const manga = res[i];
+        const chapterId = manga.id;
+        const chapterNumber = manga?.attributes?.chapter;
+        // const mangaId = manga?.relationships
+        //   .filter(
+        //     (relationship: { id: string; type?: string }) =>
+        //       relationship.type === "manga"
+        //   )
+        //   .map(
+        //     (relationship: { id: string; type?: string }) => relationship.id
+        //   );
+        let mangaId;
+        for (let j = 0; j < manga?.relationships.length; j++) {
+          console.log(manga);
+          if (manga?.relationships[j]?.type === "manga") {
+            mangaId = manga?.relationships[j].id;
+          }
+        }
+        response.push({ chapterId, chapterNumber, mangaId });
+      }
+      // returns newest chapter maybe manga id and time of updates. proba want to compare last check is after last update to ping discord
+      // create return type
+      // console.log(res?.data?.data);
+    }
+    return response;
   }
 }
