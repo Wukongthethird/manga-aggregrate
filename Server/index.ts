@@ -26,13 +26,18 @@ app.get(
   async (request: Request, response: Response, next: NextFunction) => {
     await mangadexAPI.refreshMangadexTokens();
 
-    // const manga = await mangadexAPI.getMangadexManga(
+    // const manga = await mangadexAPI.getMangaDetails(
     //   "bcbf9c51-2f3c-462c-a81b-b6e5530ae00f"
     // );
-    // const manga = await mangadexAPI.getMangadexFeed(10, "2024-08-29T23:20:50");
-    // const manga2 = await mangadexAPI.searchMangadexManga("hero");
-
-    // console.log("res", manga, manga2);
+    // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
+    // // const manga2 = await mangadexAPI.searchManga("hero");
+    // const chapter = await mangadexAPI.getMangaChapterList(
+    //   "bcbf9c51-2f3c-462c-a81b-b6e5530ae00f",
+    //   100,
+    //   146,
+    //   250
+    // );
+    // console.log(chapter);
 
     response.status(200).send("Hello World");
   }

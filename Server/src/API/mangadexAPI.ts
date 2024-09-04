@@ -3,45 +3,55 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-interface searchMangadexMangaInterface {
+export default interface searchMangaInterface {
   id: string;
   title: string;
   link: string;
   altTitles: string[];
-
   //author and artist later if wanted
 }
-interface newMangaInterface {
+export interface mangaInterface {
   chapterId: string;
   chapterNumber: string;
   mangaId: string;
-  mangaTitle: getMangadexMangaInterface;
+  mangaTitle: getMangaInterface;
   link: string;
 }
-interface getMangadexFeedInterface {
-  data: newMangaInterface[];
+export interface getMangaFeedInterface {
+  data: mangaInterface[];
   // chapterId: string;
   // chapterNumber: string;
   // mangaId: string;
   // mangaTitle?: any;
+  errors?: ErrorMessage[];
+}
+export interface chapterInterface {
+  chapterId: string;
+  chapterNumber: string | undefined;
+  totalPages: string;
+}
 
+export interface chapterListInterface {
+  data: chapterInterface[];
   errors?: ErrorMessage[];
 }
 
-interface getMangadexMangaInterface {
+export interface getMangaInterface {
   title?: string;
   altTitles?: string[];
 }
 
-interface ErrorMessage {
+export interface ErrorMessage {
   status: string;
   detail: string;
   cause?: string;
 }
+
 export default class mangadexAPI {
   static BASE_URL = process.env.MANGADEX_BASE_URL;
 
   //   static authorizations: string;
+
   static access_token: string;
   static refresh_token: string;
 
@@ -61,9 +71,7 @@ export default class mangadexAPI {
         headers,
       });
     } catch (error: any) {
-      //   console.error("api ERROR", error);
-      //mangadex api drilled error
-      console.log(error?.response?.data);
+      // console.log(error?.response?.data);
       return error?.response?.data;
     }
   }
@@ -129,24 +137,25 @@ export default class mangadexAPI {
     }
   }
 
-  static async getMangadexManga(
-    id: string
-  ): Promise<ErrorMessage | getMangadexMangaInterface> {
+  static async getMangaDetails(
+    titleId: string
+  ): Promise<ErrorMessage | getMangaInterface> {
     // const r = Math.random();
     // const url = r > 0.5 ? `manga/${id}` : `manga${id}`;
-    const res = await this.request(`manga/${id}`);
+    const res = await this.request(`manga/${titleId}`);
 
     //may need to loop if res.erros get multiple errors. only see one in array
     if (res.errors) {
       const status = res.errors[0].status;
       const detail = res.errors[0].detail;
-      const cause = id;
+      const cause = titleId;
       return {
         status,
         detail,
         cause,
       };
     }
+
     const title = res?.data.data.attributes.title.en;
     const altTitles = [];
     const altTitlesArr = res?.data.data.attributes.altTitles;
@@ -160,10 +169,10 @@ export default class mangadexAPI {
     return { title, altTitles };
   }
 
-  static async searchMangadexManga(
+  static async searchManga(
     title: string
-  ): Promise<searchMangadexMangaInterface[] | ErrorMessage> {
-    const response: searchMangadexMangaInterface[] = [];
+  ): Promise<searchMangaInterface[] | ErrorMessage> {
+    const response: searchMangaInterface[] = [];
     const res = await this.request(`manga`, { title });
 
     if (res.errors) {
@@ -201,21 +210,108 @@ export default class mangadexAPI {
     return response;
   }
 
-  // not sure if i want to return title of manga its another promise request
-  // date time should look like this  "2024-08-29T23:20:50"
-  static async getMangadexFeed(
-    limit: number,
-    dateTime: string
-  ): Promise<getMangadexFeedInterface> {
-    // res?.data?.data gives chapter id then with data -> relationships for group and manganame
+  // maybe deprecated it does give you the page amount but i mean is that needed on a small personal project?
+  // static async getMangaChapter(chapterId: string) {
+  //   const res = await this.request(`chapter/${chapterId}`);
+  //   return res.data;
+  // }
+
+  // api can only retrieve 100 chapters at a time will need to concat res
+  // dont think start is supported
+  static async getMangaChapterList(
+    titleId: string,
+    limit: number = 100,
+    end: number = 5000,
+    start: number = 0
+  ): Promise<chapterListInterface> {
     const response = {
-      data: [] as newMangaInterface[],
+      data: [] as chapterInterface[],
       errors: [] as ErrorMessage[],
     };
     const delay = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
 
-    const res = await this.request(`user/follows/manga/feed`, {
+    if (start < 0 || end < 0 || end < start) {
+      response.errors.push({ status: "400", detail: "input error" });
+      return response;
+    }
+    let totalChapters;
+    let newOffset = start;
+    let searchCondition = true;
+
+    while (searchCondition) {
+      const body = {
+        manga: titleId,
+        limit: limit,
+        offset: newOffset,
+        translatedLanguage: ["en"],
+      };
+
+      const res = await this.request(`chapter`, body);
+      if (res.errors) {
+        const status = res.errors[0].status;
+        const detail = res.errors[0].detail;
+        response.errors.push({ status, detail });
+        return response;
+      }
+
+      let resData = res.data;
+
+      totalChapters = resData.total;
+      const realEnd = Math.min(end, totalChapters);
+      let lastChapterNumber;
+      if (resData.data) {
+        newOffset += resData.data.length;
+      }
+
+      for (let i = 0; i < resData.data.length; i++) {
+        const chapter = resData.data[i];
+        const chapterId = chapter.id;
+        const chapterNumber = chapter.attributes?.chapter;
+        const totalPages = chapter.attributes?.pages;
+        if (chapterNumber != undefined) {
+          lastChapterNumber = +chapterNumber;
+        }
+        response.data.push({ chapterId, chapterNumber, totalPages });
+        //early break to get out of while loop
+        if (
+          (lastChapterNumber as number) >= realEnd ||
+          (lastChapterNumber as number) >= totalChapters
+        ) {
+          searchCondition = false;
+          break;
+        }
+      }
+
+      if (
+        !resData.data ||
+        (lastChapterNumber as number) >= realEnd ||
+        (lastChapterNumber as number) >= totalChapters ||
+        newOffset >= totalChapters ||
+        newOffset >= realEnd
+      ) {
+        searchCondition = false;
+      }
+    }
+
+    return response;
+  }
+
+  // not sure if i want to return title of manga its another promise request
+  // date time should look like this  "2024-08-29T23:20:50"
+  static async getMangaFeed(
+    limit: number,
+    dateTime: string
+  ): Promise<getMangaFeedInterface> {
+    // res?.data?.data gives chapter id then with data -> relationships for group and manganame
+    const response = {
+      data: [] as mangaInterface[],
+      errors: [] as ErrorMessage[],
+    };
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+
+    const body = {
       translatedLanguage: ["en"],
       order: {
         updatedAt: "desc",
@@ -225,7 +321,8 @@ export default class mangadexAPI {
       publishAtSince: dateTime,
       // updatedAtSince: dateTime,
       limit: limit,
-    });
+    };
+    const res = await this.request(`user/follows/manga/feed`, body);
     //may need to loop if res.erros get multiple errors. only see one in array
     if (res.errors) {
       const status = res.errors[0].status;
@@ -236,14 +333,13 @@ export default class mangadexAPI {
         detail,
         cause,
       });
-      return response;
     }
 
-    const resdata = res?.data?.data;
+    const resData = res?.data?.data;
 
-    if (resdata) {
-      for (let i = 0; i < resdata.length; i++) {
-        const manga = resdata[i];
+    if (resData) {
+      for (let i = 0; i < resData.length; i++) {
+        const manga = resData[i];
         const chapterId = manga.id;
         const chapterNumber = manga?.attributes?.chapter;
         const link = `https://mangadex.org/title/${chapterId}`;
@@ -262,7 +358,7 @@ export default class mangadexAPI {
             mangaId = manga?.relationships[j].id;
           }
         }
-        const mangaTitle = (await this.getMangadexManga(mangaId)) as any;
+        const mangaTitle = (await this.getMangaDetails(mangaId)) as any;
         await delay(210);
 
         if (mangaTitle.title) {
