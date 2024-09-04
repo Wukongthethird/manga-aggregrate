@@ -24,10 +24,16 @@ app.use(express.json());
 app.get(
   "/",
   async (request: Request, response: Response, next: NextFunction) => {
-    await mangadexAPI.getMangadexTokens();
+    await mangadexAPI.refreshMangadexTokens();
 
-    const res = await mangadexAPI.searchManga("Kichiku Eiyuu");
-    console.log("res", res?.data?.data);
+    // const manga = await mangadexAPI.getMangadexManga(
+    //   "bcbf9c51-2f3c-462c-a81b-b6e5530ae00f"
+    // );
+    // const manga = await mangadexAPI.getMangadexFeed(10, "2024-08-29T23:20:50");
+    // const manga2 = await mangadexAPI.searchMangadexManga("hero");
+
+    // console.log("res", manga, manga2);
+
     response.status(200).send("Hello World");
   }
 );
