@@ -3,6 +3,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
+//clean up interfeace later for review rewrite so mangainterface is applicable to the data given in api
 export default interface searchMangaInterface {
   id: string;
   title: string;
@@ -55,11 +56,10 @@ export default class mangadexAPI {
   static access_token: string;
   static refresh_token: string;
 
-  static async request(endpoint = "", data = {}, method = "get") {
-    const headers = {
-      "User-Agent": process.env.USER_AGENT,
-      Authorization: `Bearer ${this.access_token}`,
-    };
+  static delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  static async request(endpoint = "", data = {}, method = "get", headers = {}) {
     const url = `${this.BASE_URL}/${endpoint}`;
     const params = method === "get" ? data : {};
 
@@ -138,17 +138,17 @@ export default class mangadexAPI {
   }
 
   static async getMangaDetails(
-    titleId: string
+    mangaId: string
   ): Promise<ErrorMessage | getMangaInterface> {
     // const r = Math.random();
     // const url = r > 0.5 ? `manga/${id}` : `manga${id}`;
-    const res = await this.request(`manga/${titleId}`);
+    const res = await this.request(`manga/${mangaId}`);
 
     //may need to loop if res.erros get multiple errors. only see one in array
     if (res.errors) {
       const status = res.errors[0].status;
       const detail = res.errors[0].detail;
-      const cause = titleId;
+      const cause = mangaId;
       return {
         status,
         detail,
@@ -211,13 +211,13 @@ export default class mangadexAPI {
   }
 
   // maybe deprecated it does give you the page amount but i mean is that needed on a small personal project?
-  // static async getMangaChapter(chapterId: string) {
-  //   const res = await this.request(`chapter/${chapterId}`);
-  //   return res.data;
-  // }
+  static async getMangaChapter(chapterId: string) {
+    const res = await this.request(`chapter/${chapterId}`);
+    return res.data;
+  }
 
   // api can only retrieve 100 chapters at a time will need to concat res
-  // dont think start is supported
+
   static async getMangaChapterList(
     titleId: string,
     limit: number = 100,
@@ -228,13 +228,12 @@ export default class mangadexAPI {
       data: [] as chapterInterface[],
       errors: [] as ErrorMessage[],
     };
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
 
     if (start < 0 || end < 0 || end < start) {
       response.errors.push({ status: "400", detail: "input error" });
       return response;
     }
+
     let totalChapters;
     let newOffset = start;
     let searchCondition = true;
@@ -259,7 +258,7 @@ export default class mangadexAPI {
 
       totalChapters = resData.total;
       const realEnd = Math.min(end, totalChapters);
-      let lastChapterNumber;
+
       if (resData.data) {
         newOffset += resData.data.length;
       }
@@ -269,33 +268,57 @@ export default class mangadexAPI {
         const chapterId = chapter.id;
         const chapterNumber = chapter.attributes?.chapter;
         const totalPages = chapter.attributes?.pages;
-        if (chapterNumber != undefined) {
-          lastChapterNumber = +chapterNumber;
-        }
+        const readableAt = chapter.attributes?.readableAt;
+
         response.data.push({ chapterId, chapterNumber, totalPages });
         //early break to get out of while loop
-        if (
-          (lastChapterNumber as number) >= realEnd ||
-          (lastChapterNumber as number) >= totalChapters
-        ) {
+        if (+chapterNumber >= realEnd || +chapterNumber >= totalChapters) {
           searchCondition = false;
           break;
         }
       }
 
-      if (
-        !resData.data ||
-        (lastChapterNumber as number) >= realEnd ||
-        (lastChapterNumber as number) >= totalChapters ||
-        newOffset >= totalChapters ||
-        newOffset >= realEnd
-      ) {
+      if (!resData.data || newOffset >= totalChapters || newOffset >= realEnd) {
         searchCondition = false;
       }
     }
 
     return response;
   }
+
+  static async downloadMangaChapter(chapterId: string) {
+    const response = { data: [], error: [] };
+    const res = await this.request(`at-home/server/${chapterId}`);
+
+    // if (res.errors) {
+    //   const status = res.errors[0].status;
+    //   const detail = res.errors[0].detail;
+    //   const cause = chapterId;
+    //   response.error.push({ status, detail, cause });
+    // }
+
+    const baseURL = res?.data.baseUrl;
+    const images = res?.data.chapter.data;
+    const hash = res?.data.chapter.hash;
+    console.log(baseURL, images[7], hash);
+
+    try {
+      const res2 = await axios({
+        method: "Get",
+        url: `${baseURL}/data/${hash}/${images[7]}`,
+      });
+      console.log(res2);
+    } catch (error: any) {
+      console.log(error.data.errors);
+    }
+    //technically i dont need to download thats front ends issue but lets learn now
+
+    // if (baseURL && images && hash) {
+    //   response.data.push({ baseURL, hash, images });
+    // }
+    // return res;
+  }
+  // might be the only api that requires the headers for the bearer. keep individual headers to function or maybe seperate request
 
   // not sure if i want to return title of manga its another promise request
   // date time should look like this  "2024-08-29T23:20:50"
@@ -308,8 +331,11 @@ export default class mangadexAPI {
       data: [] as mangaInterface[],
       errors: [] as ErrorMessage[],
     };
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
+
+    const headers = {
+      "User-Agent": process.env.USER_AGENT,
+      Authorization: `Bearer ${this.access_token}`,
+    };
 
     const body = {
       translatedLanguage: ["en"],
@@ -322,7 +348,12 @@ export default class mangadexAPI {
       // updatedAtSince: dateTime,
       limit: limit,
     };
-    const res = await this.request(`user/follows/manga/feed`, body);
+    const res = await this.request(
+      `user/follows/manga/feed`,
+      body,
+      "get",
+      headers
+    );
     //may need to loop if res.erros get multiple errors. only see one in array
     if (res.errors) {
       const status = res.errors[0].status;
@@ -359,7 +390,7 @@ export default class mangadexAPI {
           }
         }
         const mangaTitle = (await this.getMangaDetails(mangaId)) as any;
-        await delay(210);
+        await this.delay(210);
 
         if (mangaTitle.title) {
           const chapter = {
