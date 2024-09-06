@@ -1,6 +1,7 @@
 "use strict";
 import axios from "axios";
 
+// this should be use to validate I guess
 export default class mangaUpdatesAPI {
   static BASE_URL = process.env.MANGAUPDATES_BASE_URL;
 
@@ -35,5 +36,8 @@ export default class mangaUpdatesAPI {
     const data = { search: title };
 
     const res = await this.request(`/v1/series/search`, data, "Post");
+  }
+  static async getManga(id: string) {
+    const res = await this.request(`/v1/series/search/${id}`);
   }
 }

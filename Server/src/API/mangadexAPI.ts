@@ -286,6 +286,7 @@ export default class mangadexAPI {
     return response;
   }
 
+  // maybe this should be front end
   static async downloadMangaChapter(chapterId: string) {
     const response = { data: [], error: [] };
     const res = await this.request(`at-home/server/${chapterId}`);
