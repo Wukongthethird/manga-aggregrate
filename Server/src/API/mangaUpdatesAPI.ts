@@ -34,10 +34,24 @@ export default class mangaUpdatesAPI {
 
   static async searchManga(title: string) {
     const data = { search: title };
+    const res = await this.request(`v1/series/search`, data, "Post");
+    if (res.status == "500") {
+      //     res.data: {
+      //   status: 'exception',
+      //   reason: 'An unexpected exception occurred. Please report to an admin.'
+      // }
+    }
 
-    const res = await this.request(`/v1/series/search`, data, "Post");
+    //array of big data
+    if (res.data.results) {
+    }
+
+    console.log(res.data.results[0]);
+
+    return res.results;
   }
   static async getManga(id: string) {
-    const res = await this.request(`/v1/series/search/${id}`);
+    const res = await this.request(`v1/series/search/${id}`);
+    return res;
   }
 }

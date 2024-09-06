@@ -34,9 +34,14 @@ app.get(
   }
 );
 
-app.get(
+app.post(
   "/searchmangaupdates",
-  async (requuest: Request, response: Response, next: NextFunction) => {}
+  async (request: Request, response: Response, next: NextFunction) => {
+    const title = request.body.title;
+
+    const resAPI = await mangaUpdatesAPI.searchManga(title);
+    console.log(resAPI);
+  }
 );
 
 app.use(errorHandler);
