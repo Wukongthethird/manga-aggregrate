@@ -28,8 +28,10 @@ app.get(
     await mangadexAPI.refreshMangadexTokens();
 
     const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
-    // const manga = await mangaUpdatesAPI.searchManga("savage hero");
-    console.log(manga.data[0]);
+    // const manga = await mangadexAPI.getMangaDetails(
+    //   "456415b4-5d90-4262-b549-34a18153039d"
+    // );
+    console.log(manga.data[0].manga);
 
     response.status(200).json({ hello: "Hello World" });
   }
