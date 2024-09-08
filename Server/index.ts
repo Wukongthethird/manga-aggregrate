@@ -27,8 +27,9 @@ app.get(
   async (request: Request, response: Response, next: NextFunction) => {
     await mangadexAPI.refreshMangadexTokens();
 
+    const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await mangaUpdatesAPI.searchManga("savage hero");
-    // console.log(manga);
+    console.log(manga.data[0]);
 
     response.status(200).json({ hello: "Hello World" });
   }
