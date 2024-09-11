@@ -4,17 +4,26 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //clean up interfeace later for review rewrite so mangainterface is applicable to the data given in api
-export default interface searchMangaInterface {
+export interface mangaInterface {
   mangaId: string;
   title: string;
-  link: string;
+  link?: string;
   altTitles: string[];
+  coverArtImageURL?: string;
   //author and artist later if wanted
 }
+
+// export interface getMangaInterface {
+//   mangaId: string;
+//   title?: string;
+//   altTitles?: string[];
+//   coverArtImageURL?: string;
+// }
+
 export interface newChapterInterface {
   chapterId: string;
   chapterNumber: string;
-  manga: getMangaInterface;
+  manga: mangaInterface;
   link: string;
 }
 
@@ -24,7 +33,7 @@ export interface getMangaFeedInterface {
   // chapterNumber: string;
   // mangaId: string;
   // mangaTitle?: any;
-  errors?: ErrorMessage[];
+  errors?: errorMessageInterface[];
 }
 export interface chapterInterface {
   chapterId: string;
@@ -34,20 +43,17 @@ export interface chapterInterface {
 
 export interface chapterListInterface {
   data: chapterInterface[];
-  errors?: ErrorMessage[];
+  errors?: errorMessageInterface[];
 }
 
-export interface getMangaInterface {
-  mangaId: string;
-  title?: string;
-  altTitles?: string[];
-  coverArtImageURL?: string;
-}
-
-export interface ErrorMessage {
+export interface errorMessageInterface {
   status: string;
   detail: string;
   cause?: string;
+}
+
+export interface errorsInterface {
+  errors: errorMessageInterface[];
 }
 
 export default class mangadexAPI {
@@ -141,7 +147,7 @@ export default class mangadexAPI {
 
   static async getMangaDetails(
     mangaId: string
-  ): Promise<ErrorMessage | getMangaInterface> {
+  ): Promise<errorsInterface | mangaInterface> {
     // const r = Math.random();
     // const url = r > 0.5 ? `manga/${id}` : `manga${id}`;
     const data = { includes: ["cover_art"] };
@@ -153,9 +159,13 @@ export default class mangadexAPI {
       const detail = res.errors[0].detail;
       const cause = mangaId;
       return {
-        status,
-        detail,
-        cause,
+        errors: [
+          {
+            status,
+            detail,
+            cause,
+          },
+        ],
       };
     }
 
@@ -182,40 +192,46 @@ export default class mangadexAPI {
 
   static async searchManga(
     title: string
-  ): Promise<searchMangaInterface[] | ErrorMessage> {
-    const response: searchMangaInterface[] = [];
-    const res = await this.request(`manga`, { title });
+  ): Promise<errorsInterface | mangaInterface[]> {
+    const response: mangaInterface[] = [];
+    const data = { includes: ["cover_art"], title };
+    const res = await this.request(`manga`, data);
 
     if (res.errors) {
       const status = res.errors[0].status;
       const detail = res.errors[0].detail;
       const cause = title;
+
       return {
-        status,
-        detail,
-        cause,
+        errors: [
+          {
+            status,
+            detail,
+            cause,
+          },
+        ],
       };
     }
-    const data = res?.data?.data;
+    const resData = res?.data?.data;
 
-    if (data.length) {
-      for (let i = 0; i < data.length; i++) {
-        const mangaId = data[i]?.id;
-        const title = data[i]?.attributes?.title.en;
+    if (resData.length) {
+      for (let i = 0; i < resData.length; i++) {
+        const mangaId = resData[i]?.id;
+        const title = resData[i]?.attributes?.title.en;
         const link = `https://mangadex.org/title/${mangaId}`;
+        let coverArtImageURL;
 
-        const altTitles = data[i]?.attributes?.altTitles
+        const altTitles = resData[i]?.attributes?.altTitles
           ?.filter((title: { en: string }) => title.en)
           .map((title: { en: string }) => title.en);
 
-        // const altTitles: string[] = [];
+        for (let j = 0; j < resData[i].relationships.length; j++) {
+          if (resData[i].relationships[j]?.type == "cover_art") {
+            coverArtImageURL = resData[i].relationships[j].attributes.fileName;
+          }
+        }
 
-        // for (let j = 0; j < res[i]?.attributes?.altTitles.length; j++) {
-        //   if ("en" in res[i]?.attributes?.altTitles[j]) {
-        //     altTitles.push(res[i]?.attributes?.altTitles[j].en);
-        //   }
-        // }
-        response.push({ mangaId, title, link, altTitles });
+        response.push({ mangaId, title, link, altTitles, coverArtImageURL });
       }
     }
     return response;
@@ -237,7 +253,7 @@ export default class mangadexAPI {
   ): Promise<chapterListInterface> {
     const response = {
       data: [] as chapterInterface[],
-      errors: [] as ErrorMessage[],
+      errors: [] as errorMessageInterface[],
     };
 
     if (start < 0 || end < 0 || end < start) {
@@ -311,8 +327,7 @@ export default class mangadexAPI {
 
     const baseURL = res?.data.baseUrl;
     const images = res?.data.chapter.data;
-    const hash = res?.data.chapter.hash;
-    console.log(baseURL, images[7], hash);
+    const hash = res?.data.hash;
 
     try {
       const res2 = await axios({
@@ -341,7 +356,7 @@ export default class mangadexAPI {
     // res?.data?.data gives chapter id then with data -> relationships for group and manganame
     const response = {
       data: [] as newChapterInterface[],
-      errors: [] as ErrorMessage[],
+      errors: [] as errorMessageInterface[],
     };
 
     const headers = {
@@ -403,6 +418,8 @@ export default class mangadexAPI {
             mangaId = chapter?.relationships[j].id;
           }
         }
+
+        //updaye this later
         const manga = (await this.getMangaDetails(mangaId)) as any;
 
         await this.delay(210);

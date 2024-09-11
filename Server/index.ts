@@ -1,5 +1,5 @@
 "use strict";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, request } from "express";
 import corsConfig from "./src/configs/corsConfig";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -15,6 +15,7 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
 
 console.log(PORT);
 //Middlewares
@@ -28,12 +29,24 @@ app.get(
     await mangadexAPI.refreshMangadexTokens();
 
     const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
-    // const manga = await mangadexAPI.getMangaDetails(
-    //   "456415b4-5d90-4262-b549-34a18153039d"
-    // );
-    console.log(manga.data[0].manga);
 
     response.status(200).json({ hello: "Hello World" });
+  }
+);
+
+app.post(
+  "/searchmangadexmanga",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const title = request.body.title;
+    const resAPI = (await mangadexAPI.searchManga(title)) as
+      | errorsInterface
+      | errorsInterface;
+
+    if (resAPI.errors) {
+      return response.status(400).json(resAPI);
+    }
+
+    return response.status(200).json({ data: resAPI });
   }
 );
 
@@ -41,9 +54,7 @@ app.post(
   "/searchmangaupdates",
   async (request: Request, response: Response, next: NextFunction) => {
     const title = request.body.title;
-
     const resAPI = await mangaUpdatesAPI.searchManga(title);
-    console.log(resAPI);
   }
 );
 
