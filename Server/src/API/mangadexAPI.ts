@@ -35,6 +35,7 @@ export interface getMangaFeedInterface {
   // mangaTitle?: any;
   errors?: errorMessageInterface[];
 }
+
 export interface chapterInterface {
   chapterId: string;
   chapterNumber: string | undefined;
@@ -246,7 +247,7 @@ export default class mangadexAPI {
   // api can only retrieve 100 chapters at a time will need to concat res
 
   static async getMangaChapterList(
-    titleId: string,
+    mangaId: string,
     limit: number = 100,
     end: number = 5000,
     start: number = 0
@@ -267,7 +268,7 @@ export default class mangadexAPI {
 
     while (searchCondition) {
       const body = {
-        manga: titleId,
+        manga: mangaId,
         limit: limit,
         offset: newOffset,
         translatedLanguage: ["en"],

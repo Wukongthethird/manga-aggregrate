@@ -38,15 +38,28 @@ app.post(
   "/searchmangadexmanga",
   async (request: Request, response: Response, next: NextFunction) => {
     const title = request.body.title;
-    const resAPI = (await mangadexAPI.searchManga(title)) as
-      | errorsInterface
-      | errorsInterface;
+    const resAPI = await mangadexAPI.searchManga(title);
 
-    if (resAPI.errors) {
+    // will depend on type of error
+    if (resAPI.hasOwnProperty("error")) {
       return response.status(400).json(resAPI);
     }
 
     return response.status(200).json({ data: resAPI });
+  }
+);
+
+// w
+app.post(
+  "/getmangapage",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const mangaId = request.body.mangaId;
+    const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
+    const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
+    const pageAndChapter = {
+      data: { chapters: mangadexChapter.data, manga: { ...mangadexPage } },
+    };
+    return response.status(200).json({ data: pageAndChapter });
   }
 );
 
