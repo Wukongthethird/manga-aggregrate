@@ -27,31 +27,63 @@ export default class mangaUpdatesAPI {
         headers,
       });
     } catch (error: any) {
-      console.log(error?.response);
-      return error?.response?.data;
+      // console.log(error?.response);
+      return error?.response;
     }
   }
 
   static async searchManga(title: string) {
     const data = { search: title };
-    const res = await this.request(`v1/series/search`, data, "Post");
-    if (res.status == "500") {
-      //     res.data: {
-      //   status: 'exception',
-      //   reason: 'An unexpected exception occurred. Please report to an admin.'
-      // }
+    const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
+    const response = [];
+    //return errors here
+    if (mangapdatesRes.status === 500) {
+      const apiErrors = mangapdatesRes.data;
+
+      const status = apiErrors.status;
+      const detail = apiErrors.reason;
+
+      return { errors: [{ status, detail }] };
     }
 
-    //array of big data
-    if (res.data.results) {
+    const searchresults = mangapdatesRes.data.results;
+    if (searchresults) {
+      for (let sr of searchresults) {
+        const mangaId = sr?.record?.series_id;
+        const title = sr?.record?.title;
+        const imageURL = sr?.record?.image?.url?.original;
+        const link = sr?.record?.url;
+
+        response.push({ mangaId, title, imageURL, link });
+      }
     }
-
-    console.log(res.data.results[0]);
-
-    return res.results;
+    return response;
   }
-  static async getManga(id: string) {
-    const res = await this.request(`v1/series/search/${id}`);
-    return res;
+
+  static async getManga(mangaId: string) {
+    const mangapdatesRes = await this.request(`v1/series/${mangaId}`);
+
+    if (mangapdatesRes.status === 500) {
+      const apiErrors = mangapdatesRes.data;
+
+      const status = apiErrors.status;
+      const detail = apiErrors.reason;
+      return { errors: [{ status, detail }] };
+    }
+
+    const mangaInfo = mangapdatesRes?.data;
+    const title = mangaInfo.title;
+    const link = mangaInfo.url;
+    const imageURL = mangaInfo.image.url;
+    const altTitles = [];
+    if (mangaInfo?.associated) {
+      for (let t of mangaInfo?.associated) {
+        if (t.title.match(/[a-zA-Z0-9]/g)) {
+          altTitles.push(t.title);
+        }
+      }
+    }
+
+    return { mangaId, title, link, imageURL, altTitles };
   }
 }

@@ -6,8 +6,11 @@ import dotenv from "dotenv";
 
 //middleware import
 import errorHandler from "./src/middlewares/errorHandler";
+
+//manga related
 import mangadexAPI from "./src/API/mangadexAPI";
 import mangaUpdatesAPI from "./src/API/mangaUpdatesAPI";
+import searchUpdatedManga from "./src/webscraper/mangasee123/searchUpdatedManga";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -28,7 +31,8 @@ app.get(
   async (request: Request, response: Response, next: NextFunction) => {
     await mangadexAPI.refreshMangadexTokens();
 
-    const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
+    // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
+    searchUpdatedManga();
 
     response.status(200).json({ hello: "Hello World" });
   }
@@ -40,10 +44,15 @@ app.post(
     const title = request.body.title;
     const resAPI = await mangadexAPI.searchManga(title);
 
-    // will depend on type of error
-    if (resAPI.hasOwnProperty("error")) {
-      return response.status(400).json(resAPI);
-    }
+    // if (!resAPI) {
+    //   return response.status(500);
+    // }
+
+    // // will depend on type of error
+    // if (resAPI.hasOwnProperty("error")) {
+    //   return response.status(400).json(resAPI);
+
+    // }
 
     return response.status(200).json({ data: resAPI });
   }
@@ -51,7 +60,7 @@ app.post(
 
 // w
 app.post(
-  "/getmangapage",
+  "/getmangadexpage",
   async (request: Request, response: Response, next: NextFunction) => {
     const mangaId = request.body.mangaId;
     const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
@@ -68,6 +77,24 @@ app.post(
   async (request: Request, response: Response, next: NextFunction) => {
     const title = request.body.title;
     const resAPI = await mangaUpdatesAPI.searchManga(title);
+
+    if (resAPI.hasOwnProperty("error")) {
+      return response.status(404).json({ ...resAPI });
+    }
+    return response.status(200).json({ data: resAPI });
+  }
+);
+
+app.post(
+  "/getmangaupdatesmangainfo",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const mangaId = request.body.mangaId;
+    const resAPI = await mangaUpdatesAPI.getManga(mangaId);
+
+    if (resAPI.hasOwnProperty("errors")) {
+      return response.status(404).json({ ...resAPI });
+    }
+    return response.status(200).json({ data: resAPI });
   }
 );
 
