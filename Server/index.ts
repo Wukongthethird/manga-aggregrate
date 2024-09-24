@@ -10,7 +10,7 @@ import errorHandler from "./src/middlewares/errorHandler";
 //manga related
 import mangadexAPI from "./src/API/mangadexAPI";
 import mangaUpdatesAPI from "./src/API/mangaUpdatesAPI";
-import searchUpdatedManga from "./src/webscraper/mangasee123/searchUpdatedManga";
+import searchUpdatedMangasee123 from "./src/webscraper/mangasee123/searchUpdatedMangasee123";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -19,6 +19,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
+import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
 
 console.log(PORT);
 //Middlewares
@@ -32,9 +33,9 @@ app.get(
     await mangadexAPI.refreshMangadexTokens();
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
-    searchUpdatedManga();
+    const manga = await searchUpdatedMangasee123();
 
-    response.status(200).json({ hello: "Hello World" });
+    response.status(200).json(manga);
   }
 );
 
