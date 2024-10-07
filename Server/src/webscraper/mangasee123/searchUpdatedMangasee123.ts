@@ -66,7 +66,6 @@ const searchUpdatedMangasee123 = async (): Promise<
         lastMangaDate = await lastManga.locator(".GrayLabel").textContent();
         checkDate = lastMangaDate ? new Date(lastMangaDate.slice(2)) : null;
       }
-      page.screenshot({ path: "page.png", fullPage: true });
 
       const rows = await page.locator(".col-md-10").all();
 

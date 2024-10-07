@@ -11,6 +11,10 @@ import errorHandler from "./src/middlewares/errorHandler";
 import mangadexAPI from "./src/API/mangadexAPI";
 import mangaUpdatesAPI from "./src/API/mangaUpdatesAPI";
 import searchUpdatedMangasee123 from "./src/webscraper/mangasee123/searchUpdatedMangasee123";
+import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
+import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
+import getMangasee123Manga from "./src/webscraper/mangasee123/getMangasee123Manga";
+import getMangasee123Chapter from "./src/webscraper/mangasee123/getMangasee123Chapter";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -18,8 +22,6 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
-import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
 
 console.log(PORT);
 //Middlewares
@@ -33,9 +35,9 @@ app.get(
     await mangadexAPI.refreshMangadexTokens();
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
-    const manga = await searchUpdatedMangasee123();
-
-    response.status(200).json(manga);
+    // const manga = await searchMangasee123Manga();
+    const manga = await getMangasee123Chapter();
+    response.status(200).json({ data: manga });
   }
 );
 
@@ -80,9 +82,9 @@ app.post(
     const resAPI = await mangaUpdatesAPI.searchManga(title);
 
     if (resAPI.hasOwnProperty("error")) {
-      return response.status(404).json({ ...resAPI });
+      return response.status(404).json(resAPI);
     }
-    return response.status(200).json({ data: resAPI });
+    return response.status(200).json(resAPI);
   }
 );
 
@@ -93,9 +95,9 @@ app.post(
     const resAPI = await mangaUpdatesAPI.getManga(mangaId);
 
     if (resAPI.hasOwnProperty("errors")) {
-      return response.status(404).json({ ...resAPI });
+      return response.status(404).json(resAPI);
     }
-    return response.status(200).json({ data: resAPI });
+    return response.status(200).json(resAPI);
   }
 );
 
