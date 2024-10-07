@@ -78,6 +78,7 @@ app.post(
 app.post(
   "/searchmangaupdates",
   async (request: Request, response: Response, next: NextFunction) => {
+    console.log("hit");
     const title = request.body.title;
     const resAPI = await mangaUpdatesAPI.searchManga(title);
 

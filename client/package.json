@@ -13,6 +13,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "framer-motion": "^11.11.1",
     "next": "14.2.14",
     "nodemon": "^3.1.7",

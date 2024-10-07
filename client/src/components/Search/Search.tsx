@@ -1,5 +1,6 @@
-import {Flex, Input, InputGroup} from '@chakra-ui/react'
+import {Input, } from '@chakra-ui/react'
 import React ,{useState} from 'react'
+import API from '@/api/API'
 
 
 
@@ -9,12 +10,18 @@ import React ,{useState} from 'react'
 
 const Search:React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("")
-
+    //onsubmit probably should be handed from parent. requesting data onhome page about manga
+    const onSubmit = async (event:React.FormEvent<HTMLFormElement>) =>{
+        event.preventDefault()
+        const res =await API.searchMangaUpdates(searchTerm)
+        console.log(res)
+    }
     const onChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
         setSearchTerm(event.target.value)
     }
 
-    return (<form>
+    return (<form
+    onSubmit={onSubmit}>
         <Input
             required
             name = "search"

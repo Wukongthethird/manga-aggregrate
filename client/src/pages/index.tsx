@@ -13,6 +13,8 @@
 //   variable: "--font-geist-mono",
 //   weight: "100 900",
 // });
+import dotenv from "dotenv";
+dotenv.config();
 import Search from "@/components/Search/Search";
 
 export default function Home() {
