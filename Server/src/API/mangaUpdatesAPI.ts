@@ -1,6 +1,30 @@
 "use strict";
 import axios from "axios";
 
+export interface searchMangaUpdatesInterface {
+  mangaId: string;
+  title: string;
+  imageURL: string;
+  link: string;
+}
+
+export interface errorMessageInterface {
+  status: string;
+  detail: string;
+}
+
+export interface errorsInterface {
+  errors: errorMessageInterface[];
+}
+
+export interface getMangaUpdatesManga {
+  mangaId: string;
+  title: string;
+  link: string;
+  imageURL: string;
+  altTitles: string[];
+}
+
 // this should be use to validate I guess
 export default class mangaUpdatesAPI {
   static BASE_URL = process.env.MANGAUPDATES_BASE_URL;
@@ -32,7 +56,9 @@ export default class mangaUpdatesAPI {
     }
   }
 
-  static async searchManga(title: string) {
+  static async searchManga(
+    title: string
+  ): Promise<errorsInterface | searchMangaUpdatesInterface[]> {
     const data = { search: title };
     const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
     const response = [];
@@ -60,7 +86,9 @@ export default class mangaUpdatesAPI {
     return response;
   }
 
-  static async getManga(mangaId: string) {
+  static async getManga(
+    mangaId: string
+  ): Promise<errorsInterface | getMangaUpdatesManga> {
     const mangapdatesRes = await this.request(`v1/series/${mangaId}`);
 
     if (mangapdatesRes.status === 500) {
