@@ -19,8 +19,8 @@ const SearchPage: React.FC = () => {
 
   return (
     <Flex
-      bg="red.500"
-      height={"50px"}
+      // bg="red.500"
+      // height={"50px"}
       padding="6 12"
       justify={{ md: "space-between" }}
       align="center"

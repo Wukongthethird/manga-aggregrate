@@ -47,10 +47,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <Flex flexGrow={1} mr={2} align={"center"} width={"100%"} mt={"20px"}>
+    <Flex
+      justify={"space-evenly"}
+      align={"center"}
+      height="56px"
+      borderRadius={4}
+      width={"100%"}
+    >
       <form onSubmit={onSubmit}>
         <Input
-          width={"100%"}
+          width={"600px"}
           required
           name="search"
           placeholder="search"
@@ -58,6 +64,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
           fontSize="10pt"
           _placeholder={{ color: "gray.500" }}
           _hover={{ border: "1px solid", borderColor: "red.500" }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            borderColor: "red.500",
+            border: "1px solid",
+          }}
+          bg="gray.100"
+          borderColor={"gray.200"}
+          height={"36px"}
+          borderRadius={4}
+          mr={4}
         />
       </form>
     </Flex>
