@@ -1,9 +1,15 @@
-import React from 'react';
-import Search from '@/components/Search/Search';
+import React, {useState} from 'react';
 
-const search:React.FC<searchProps> = () => {
-    const [searchResult , setSearchResult] = useState([])
-    
-    return (<><Search/></>)
+import SearchPage from '@/components/Search/SearchPage';
+
+export interface searchMangaUpdatesInterface {
+    mangaId: string;
+    title: string;
+    imageURL: string;
+    link: string;
+  }
+
+const search= () => {
+    return (<><SearchPage/></>)
 }
 export default search;

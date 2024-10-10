@@ -60,7 +60,7 @@ export default class mangaUpdatesAPI {
     title: string
   ): Promise<errorsInterface | searchMangaUpdatesInterface[]> {
     const data = { search: title };
-    const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
+    const mangapdatesRes = await this.request(`v1/serie/search`, data, "post");
     const response = [];
     //return errors here
     if (mangapdatesRes.status === 500) {
