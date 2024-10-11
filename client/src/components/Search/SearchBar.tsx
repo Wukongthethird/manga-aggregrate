@@ -26,9 +26,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
   //onsubmit probably should be handed from parent. requesting data onhome page about manga
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setLoading(true);
     try {
       const res = await API.searchMangaUpdates(searchTerm);
+      console.log("here , res", res);
       if (!res) {
         setError("server is down");
       } else if (res?.data?.errors) {
