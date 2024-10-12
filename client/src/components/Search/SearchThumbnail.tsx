@@ -1,4 +1,4 @@
-import { Flex, Stack, Image, Box, Text } from "@chakra-ui/react";
+import { Flex, Stack, Image, Box, Text, AspectRatio } from "@chakra-ui/react";
 import React from "react";
 
 type SearchThumbnail = {
@@ -20,22 +20,30 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
     <Flex
       border="1px solid"
       bg="white"
-      height={"400px"}
-      _hover={{ bgColor: "gray.50" }}
+      minH={"200px"}
+      maxH={"200px"}
+      _hover={{ bgColor: "gray.100" }}
+      width={"100%"}
+      display={"table"}
     >
-      <Stack spacing={1} direction={"row"} align={"center"}>
-        <Box>
-          <Image
-            src={imageURL}
-            alt="N/A"
-            // borderRadius={"full"}
-            boxSize={"100px"}
-            mr={2}
-          />
+      <Stack height={"100%"} direction={"row"} align={"center"}>
+        <Box height={"100%"} width={"25%"}>
+          <AspectRatio as="div" ratio={1 / 1}>
+            <Image
+              src={imageURL}
+              alt="N/A"
+              // borderRadius={"full"}
+              //   boxSize={"250px"}
+              // height={"100%"}
+              // width={"100%"}
+              objectFit={"cover"}
+              mr={2}
+            />
+          </AspectRatio>
         </Box>
-        <Box>
-          <Text>{title}</Text>
-          <Text>{link}</Text>
+        <Box display={"table"}>
+          <Text overflow={"hidden"}>{title}</Text>
+          <Text overflow={"hidden"}>{link}</Text>
           {/* <Text>Go To Page</Text> */}
         </Box>
       </Stack>

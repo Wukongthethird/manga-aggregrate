@@ -15,7 +15,7 @@ type SearchResultProps = {
 
 const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
   return (
-    <Stack justify={"center"} mt={"20px"}>
+    <Stack width={"75%"} justify={"center"} mt={"20px"}>
       {searchResult.map((item) => {
         return (
           <SearchThumbnail
