@@ -1,11 +1,22 @@
-import { Flex, Stack, Image, Box, Text, AspectRatio } from "@chakra-ui/react";
+import {
+  Flex,
+  Stack,
+  Image,
+  Box,
+  Text,
+  AspectRatio,
+  Link,
+} from "@chakra-ui/react";
 import React from "react";
+import NextLink from "next/link";
 
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 type SearchThumbnail = {
   mangaId: string;
   title: string;
   imageURL: string;
   link: string;
+  description: string;
 };
 
 //
@@ -15,6 +26,7 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
   title,
   imageURL,
   link,
+  description,
 }) => {
   return (
     <Flex
@@ -41,10 +53,26 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
             />
           </AspectRatio>
         </Box>
-        <Box display={"table"}>
-          <Text overflow={"hidden"}>{title}</Text>
-          <Text overflow={"hidden"}>{link}</Text>
-          {/* <Text>Go To Page</Text> */}
+        <Box maxWidth={"75%"}>
+          <Box mt={0} maxH={"15%"}>
+            <Text fontSize={"16px"} fontWeight={600} mt={0} overflow={"hidden"}>
+              {title}
+            </Text>
+          </Box>
+          {/* <Box maxH={"50%"}>
+            <Text overflow={"hidden"}>{description}</Text>
+          </Box> */}
+          <Box>
+            <Link href={link} isExternal as={NextLink}>
+              Get all Data on MangaUpdates
+              <ExternalLinkIcon mx="2px" />
+            </Link>
+          </Box>
+          <Box>
+            <Link href={`/manga/${mangaId}`} as={NextLink}>
+              Go To Page
+            </Link>
+          </Box>
         </Box>
       </Stack>
     </Flex>

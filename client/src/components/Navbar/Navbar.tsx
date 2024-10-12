@@ -1,5 +1,6 @@
 import { Flex, Link } from "@chakra-ui/react";
 import React from "react";
+import NextLink from "next/link";
 
 const Navbar: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const Navbar: React.FC = () => {
           mr={2}
           _hover={{ textDecoration: "none" }}
           href="/"
+          as={NextLink}
         >
           Home
         </Link>
@@ -28,6 +30,7 @@ const Navbar: React.FC = () => {
           mr={2}
           _hover={{ textDecoration: "none" }}
           href="/search"
+          as={NextLink}
         >
           Search
         </Link>

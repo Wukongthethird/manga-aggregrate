@@ -15,15 +15,9 @@
 // });
 import dotenv from "dotenv";
 dotenv.config();
-import Search from "@/components/Search/Search";
-import Thumbnail from "@/components/Manga/Thumbnail";
+// import Search from "@/components/Search/Search";
+// import Thumbnail from "@/components/Manga/Thumbnail";
 
 export default function Home() {
-
-  
-  return (
-    <>
-   hello
-  </>
-  );
+  return <>hello</>;
 }

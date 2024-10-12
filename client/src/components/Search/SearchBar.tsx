@@ -7,6 +7,7 @@ export interface searchMangaUpdatesInterface {
   title: string;
   imageURL: string;
   link: string;
+  description: string;
 }
 
 type SearchBarProps = {

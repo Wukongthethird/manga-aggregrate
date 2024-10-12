@@ -7,6 +7,7 @@ interface searchResult {
   title: string;
   imageURL: string;
   link: string;
+  description: string;
 }
 
 type SearchResultProps = {
@@ -24,6 +25,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
             imageURL={item.imageURL}
             mangaId={item.mangaId}
             link={item.link}
+            description={item.description}
           />
         );
       })}

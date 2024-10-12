@@ -8,6 +8,7 @@ export interface searchMangaUpdatesInterface {
   title: string;
   imageURL: string;
   link: string;
+  description: string;
 }
 
 //pass loading and errors to search bar render out results here

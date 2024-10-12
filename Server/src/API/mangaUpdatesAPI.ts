@@ -6,6 +6,7 @@ export interface searchMangaUpdatesInterface {
   title: string;
   imageURL: string;
   link: string;
+  description: string;
 }
 
 export interface errorMessageInterface {
@@ -23,6 +24,8 @@ export interface getMangaUpdatesManga {
   link: string;
   imageURL: string;
   altTitles: string[];
+  author: string[];
+  artist: string[];
 }
 
 // this should be use to validate I guess
@@ -79,8 +82,9 @@ export default class mangaUpdatesAPI {
         const title = sr?.record?.title;
         const imageURL = sr?.record?.image?.url?.original;
         const link = sr?.record?.url;
+        const description = sr?.record?.description;
 
-        response.push({ mangaId, title, imageURL, link });
+        response.push({ mangaId, title, imageURL, link, description });
       }
     }
     return response;
@@ -111,7 +115,19 @@ export default class mangaUpdatesAPI {
         }
       }
     }
+    const author = [];
+    const artist = [];
+    if (mangaInfo?.authors) {
+      for (let a of mangaInfo?.authors) {
+        if (a.type == "Author") {
+          author.push(a.name);
+        }
+        if (a.type == "Artist") {
+          artist.push(a.name);
+        }
+      }
+    }
 
-    return { mangaId, title, link, imageURL, altTitles };
+    return { mangaId, title, link, imageURL, altTitles, artist, author };
   }
 }
