@@ -15,6 +15,7 @@ import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
 import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
 import getMangasee123Manga from "./src/webscraper/mangasee123/getMangasee123Manga";
 import getMangasee123Chapter from "./src/webscraper/mangasee123/getMangasee123Chapter";
+import searchMangasee123Author from "./src/webscraper/mangasee123/searchMangasee123Author";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -36,7 +37,8 @@ app.get(
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await searchMangasee123Manga();
-    const manga = await getMangasee123Chapter();
+    // const manga = await mangadexAPI.searchAuthor("ueno");
+    const manga = await searchMangasee123Author("ueno");
     response.status(200).json({ data: manga });
   }
 );
@@ -99,6 +101,11 @@ app.post(
     }
     return response.status(200).json(resAPI);
   }
+);
+
+app.post(
+  "/findmangaonsites",
+  async (request: Request, response: Response, next: NextFunction) => {}
 );
 
 app.use(errorHandler);

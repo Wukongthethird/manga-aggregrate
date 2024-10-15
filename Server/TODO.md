@@ -18,6 +18,8 @@ download chapters
 
 chapter 180 read download
 
-d
-
+verifies manga / connect manga
+mangaupdates - search by author match by title if match brings data. mangadex return id and get data
+mangasee123 same by autho and function to scan through list of author to see if manga is included
+mangaupdates UUID (get title and author) -> search by author -> scan for exact author match -> then search list of manga for match if match return data
 client home page

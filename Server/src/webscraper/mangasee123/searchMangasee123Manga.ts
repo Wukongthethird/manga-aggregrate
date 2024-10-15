@@ -17,7 +17,7 @@ export interface errorsInterface {
 export interface mangasee123Manga {
   title: string;
   mangaLink: string;
-  mangaka: string[];
+  author: string[];
 }
 
 export interface searchMangasee123 {
@@ -64,7 +64,7 @@ const searchMangasee123Manga = async (): Promise<
         const current = {
           title: "",
           mangaLink: "",
-          mangaka: [] as string[],
+          author: [] as string[],
         };
 
         const title = await r.locator(".SeriesName").textContent();
@@ -73,10 +73,10 @@ const searchMangasee123Manga = async (): Promise<
         const link = await r.locator(".SeriesName").getAttribute("href");
         current["mangaLink"] = link ? `${baseURL}${link}` : "";
 
-        const mangaka = await r
+        const author = await r
           .locator("[ng-click='vm.Search.Author = Author; vm.UpdateLink();']")
           .allTextContents();
-        current["mangaka"] = mangaka ? mangaka : [];
+        current["author"] = author ? author : [];
 
         res.push(current);
       }

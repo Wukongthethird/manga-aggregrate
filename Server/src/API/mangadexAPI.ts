@@ -238,6 +238,55 @@ export default class mangadexAPI {
     return response;
   }
 
+  static async searchAuthor(name: string) {
+    const response = [] as any;
+    //may need to keep going if author is less than 100
+    const data = { includes: ["manga"], name, limit: 100 };
+    const res = await this.request("author", data);
+
+    if (res.errors) {
+      const status = res.errors[0].status;
+      const detail = res.errors[0].detail;
+
+      return {
+        errors: [
+          {
+            status,
+            detail,
+          },
+        ],
+      };
+    }
+    const totalAuthors = res?.data?.total;
+    const resData = res?.data?.data;
+    // console.l''og(resData);
+    // console.log("hello", resData);
+
+    if (resData) {
+      for (let i = 0; i < resData.length; i++) {
+        const authorId = resData[i]?.id;
+        const name = resData[i]?.attributes?.name;
+        // array of manga objects
+        const mangaList = [] as any;
+        const relationships = resData[i]?.relationships;
+        console.log("here", name, relationships);
+
+        if (relationships) {
+          for (let r = 0; r < relationships.length; r++) {
+            console.log(relationships);
+            const mangaId = relationships[r].id;
+            const title = relationships[r]?.attributes?.title;
+            const altTitle = relationships[r]?.attributes?.altTitles;
+            mangaList.push({ mangaId, title, altTitle });
+          }
+        }
+
+        response.push({ authorId, name, mangaList });
+      }
+    }
+    return response;
+  }
+
   // maybe deprecated it does give you the page amount but i mean is that needed on a small personal project?
   static async getMangaChapter(chapterId: string) {
     const res = await this.request(`chapter/${chapterId}`);

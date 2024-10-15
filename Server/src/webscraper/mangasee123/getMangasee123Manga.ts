@@ -12,7 +12,7 @@ export interface errorsInterface {
 
 export interface mangasee123Manga {
   title: string;
-  mangaka: string[];
+  author: string[];
   chapters: chapter[];
 }
 
@@ -35,7 +35,7 @@ const getMangasee123Manga = async (): Promise<
   const page = await browser.newPage();
   while (tries < maxTries) {
     try {
-      const res = { title: "", mangaka: [] as string[], chapters: [] as any };
+      const res = { title: "", author: [] as string[], chapters: [] as any };
       await page.goto(`${baseURL}/manga/${titleId}`);
       const showAllChapterButton = await page
         .locator(".ShowAllChapters")
@@ -50,10 +50,10 @@ const getMangasee123Manga = async (): Promise<
         .innerText();
 
       res["title"] = title ? title.replace(/\t/g, "").replace("\n", "") : "";
-      const mangaka = await page
+      const author = await page
         .locator("[href^='/search/?author=']")
         .allInnerTexts();
-      res["mangaka"] = mangaka ? mangaka : [];
+      res["author"] = author ? author : [];
 
       const chapterListRes = await page
         .locator(".list-group-item.ChapterLink.ng-scope")

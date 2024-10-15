@@ -7,7 +7,7 @@ export interface searchUpdatedMangasee123 {
 export interface updatedMangasee123 {
   title: string;
   mangaLink: string;
-  mangaka: string[];
+  author: string[];
   latestChapter: string;
   latestChapterLink: string;
   lastUpdatedDate: string;
@@ -73,7 +73,7 @@ const searchUpdatedMangasee123 = async (): Promise<
         const current = {
           title: "",
           mangaLink: "",
-          mangaka: [] as string[],
+          author: [] as string[],
           latestChapter: "",
           latestChapterLink: "",
           lastUpdatedDate: "",
@@ -84,10 +84,10 @@ const searchUpdatedMangasee123 = async (): Promise<
         const link = await r.locator(".SeriesName").getAttribute("href");
         current["mangaLink"] = link ? `${baseURL}${link}` : "";
 
-        const mangaka = await r
+        const author = await r
           .locator("[ng-click='vm.Search.Author = Author; vm.UpdateLink();']")
           .allTextContents();
-        current["mangaka"] = mangaka ? mangaka : [];
+        current["author"] = author ? author : [];
 
         const latestChapter = await r
           .locator(`[ng-if="Series.l != 'N/A'"]`)
