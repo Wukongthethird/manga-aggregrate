@@ -9,13 +9,16 @@ import errorHandler from "./src/middlewares/errorHandler";
 
 //manga related
 import mangadexAPI from "./src/API/mangadexAPI";
-import mangaUpdatesAPI from "./src/API/mangaUpdatesAPI";
+import mangaUpdatesAPI, {
+  getMangaUpdatesManga,
+} from "./src/API/mangaUpdatesAPI";
 import searchUpdatedMangasee123 from "./src/webscraper/mangasee123/searchUpdatedMangasee123";
 import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
 import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
 import getMangasee123Manga from "./src/webscraper/mangasee123/getMangasee123Manga";
 import getMangasee123Chapter from "./src/webscraper/mangasee123/getMangasee123Chapter";
 import searchMangasee123Author from "./src/webscraper/mangasee123/searchMangasee123Author";
+import filterMangadexAuthorManga from "./src/functions/filterMangadexAuthorManga";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -105,7 +108,46 @@ app.post(
 
 app.post(
   "/findmangaonsites",
-  async (request: Request, response: Response, next: NextFunction) => {}
+  async (request: Request, response: Response, next: NextFunction) => {
+    // mangaId on mangaupdates
+
+    const mangaId = request.body.mangaId;
+    const resMangaUpdatesAPI: errorsInterface | getMangaUpdatesManga =
+      await mangaUpdatesAPI.getManga(mangaId);
+    //array of author may need to process one by one?
+    // console.log(resMangaUpdatesAPI);
+    if (resMangaUpdatesAPI.hasOwnProperty("errors")) {
+      return response.status(404).json(resMangaUpdatesAPI);
+    }
+
+    // filter by author is here
+    if ("author" in resMangaUpdatesAPI) {
+      const mangaTitles = [resMangaUpdatesAPI.title].concat(
+        resMangaUpdatesAPI.altTitles
+      );
+
+      const authors = resMangaUpdatesAPI.author;
+      for (const author of authors) {
+        // console.log(a);
+        const mangadexAuthorResults = await mangadexAPI.searchAuthor(
+          author.toLowerCase()
+        );
+
+        // if (mangadexAuthorResults) {
+        for (const mangadexAuthor of mangadexAuthorResults) {
+          if (mangadexAuthor.name.toLowerCase() === author.toLowerCase()) {
+            const mangadexMangaId = filterMangadexAuthorManga(
+              mangaTitles,
+              mangadexAuthor.mangaList
+            );
+
+            console.log(mangadexMangaId);
+          }
+        }
+        // }
+      }
+    }
+  }
 );
 
 app.use(errorHandler);

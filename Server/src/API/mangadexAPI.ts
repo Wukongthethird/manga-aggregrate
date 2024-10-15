@@ -269,11 +269,11 @@ export default class mangadexAPI {
         // array of manga objects
         const mangaList = [] as any;
         const relationships = resData[i]?.relationships;
-        console.log("here", name, relationships);
+        // console.log("here", name, relationships);
 
         if (relationships) {
           for (let r = 0; r < relationships.length; r++) {
-            console.log(relationships);
+            // console.log(relationships);
             const mangaId = relationships[r].id;
             const title = relationships[r]?.attributes?.title;
             const altTitle = relationships[r]?.attributes?.altTitles;
