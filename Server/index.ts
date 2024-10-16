@@ -127,25 +127,25 @@ app.post(
       );
 
       const authors = resMangaUpdatesAPI.author;
-      for (const author of authors) {
-        // console.log(a);
-        const mangadexAuthorResults = await mangadexAPI.searchAuthor(
-          author.toLowerCase()
-        );
 
-        // if (mangadexAuthorResults) {
-        for (const mangadexAuthor of mangadexAuthorResults) {
-          if (mangadexAuthor.name.toLowerCase() === author.toLowerCase()) {
-            const mangadexMangaId = filterMangadexAuthorManga(
-              mangaTitles,
-              mangadexAuthor.mangaList
-            );
+      // for (const author of authors) {
 
-            console.log(mangadexMangaId);
-          }
-        }
-        // }
-      }
+      //   const mangadexAuthorResults = await mangadexAPI.searchAuthor(
+      //     author.toLowerCase()
+      //   );
+
+      // if (mangadexAuthorResults) {
+      // for (const mangadexAuthor of mangadexAuthorResults) {
+      //   if (mangadexAuthor.name.toLowerCase() === author.toLowerCase()) {
+      //     // returns mangaId for mangdex
+      const mangadexMangaId = await filterMangadexAuthorManga(
+        authors,
+        mangaTitles
+      );
+      //   }
+      // }
+      // }
+      // }
     }
   }
 );
