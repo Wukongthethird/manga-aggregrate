@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //clean up interfeace later for review rewrite so mangainterface is applicable to the data given in api
-export interface mangaInterface {
+export interface mangadexMangaInterface {
   mangaId: string;
   title: title;
   link?: string;
@@ -15,7 +15,7 @@ export interface mangaInterface {
 export interface authorWorks {
   authorId: string;
   name: string;
-  mangaList: mangaInterface[];
+  mangaList: mangadexMangaInterface[];
 }
 
 // export interface getMangaInterface {
@@ -32,7 +32,7 @@ export interface title {
 export interface newChapterInterface {
   chapterId: string;
   chapterNumber: string;
-  manga: mangaInterface;
+  manga: mangadexMangaInterface;
   link: string;
 }
 
@@ -157,7 +157,7 @@ export default class mangadexAPI {
 
   static async getMangaDetails(
     mangaId: string
-  ): Promise<errorsInterface | mangaInterface> {
+  ): Promise<errorsInterface | mangadexMangaInterface> {
     // const r = Math.random();
     // const url = r > 0.5 ? `manga/${id}` : `manga${id}`;
     const data = { includes: ["cover_art"] };
@@ -202,8 +202,8 @@ export default class mangadexAPI {
 
   static async searchManga(
     title: string
-  ): Promise<errorsInterface | mangaInterface[]> {
-    const response: mangaInterface[] = [];
+  ): Promise<errorsInterface | mangadexMangaInterface[]> {
+    const response: mangadexMangaInterface[] = [];
     const data = { includes: ["cover_art"], title };
     const res = await this.request(`manga`, data);
 
@@ -249,7 +249,9 @@ export default class mangadexAPI {
     return response;
   }
 
-  static async searchAuthor(name: string) {
+  static async searchAuthor(
+    name: string
+  ): Promise<errorsInterface | authorWorks> {
     const response = [] as any;
     //may need to keep going if author is less than 100
     const data = { includes: ["manga"], name, limit: 100 };
@@ -286,8 +288,8 @@ export default class mangadexAPI {
           for (let r = 0; r < relationships.length; r++) {
             const mangaId = relationships[r].id;
             const title = relationships[r]?.attributes?.title;
-            const altTitle = relationships[r]?.attributes?.altTitles;
-            mangaList.push({ mangaId, title, altTitle });
+            const altTitles = relationships[r]?.attributes?.altTitles;
+            mangaList.push({ mangaId, title, altTitles });
           }
         }
 

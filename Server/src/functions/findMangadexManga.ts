@@ -1,14 +1,15 @@
 "use strict";
 
 import mangadexAPI from "../API/mangadexAPI";
+import { mangadexMangaInterface } from "../API/mangadexAPI";
 
 // type of autho results in mangadex
 const filterMangadexAuthorManga = async (
   authors: string[],
   mangaTitles: string[]
   //   listOfAuthorManga: any
-) => {
-  let matchedMangadexId;
+): Promise<void | string> => {
+  // let matchedMangadexId;
 
   // typescript this later
   const mangaTitlesSet: Set<string> = new Set();
@@ -16,15 +17,14 @@ const filterMangadexAuthorManga = async (
     mangaTitlesSet.add(t.toLowerCase());
   }
 
-  let listOfAuthorManga = [] as any;
+  let listOfAuthorManga: mangadexMangaInterface[] = [];
   for (const author of authors) {
     const mangadexAuthorResults = await mangadexAPI.searchAuthor(
       author.toLowerCase()
     );
-    if (mangadexAuthorResults) {
-      for (const aRes of mangadexAuthorResults) {
-        // revisit this maybe i dont wan
 
+    if (Array.isArray(mangadexAuthorResults)) {
+      for (const aRes of mangadexAuthorResults) {
         if (author.toLowerCase() === aRes?.name.toLowerCase()) {
           listOfAuthorManga.push(...aRes.mangaList);
         }
@@ -41,7 +41,7 @@ const filterMangadexAuthorManga = async (
       }
 
       // mangaNames.push(mTitle.toLowerCase());
-      for (const altTitle of authorWorks.altTitle) {
+      for (const altTitle of authorWorks.altTitles) {
         const currentTitle = Object.values(altTitle)[0] as string;
         // maybe jsut do a match on all titles instead of english
         if (currentTitle.match(/[a-zA-Z0-9]/g)) {

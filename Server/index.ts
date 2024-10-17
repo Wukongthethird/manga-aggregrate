@@ -13,7 +13,7 @@ import mangaUpdatesAPI, {
   getMangaUpdatesManga,
 } from "./src/API/mangaUpdatesAPI";
 import searchUpdatedMangasee123 from "./src/webscraper/mangasee123/searchUpdatedMangasee123";
-import { errorsInterface, mangaInterface } from "./src/API/mangadexAPI";
+import { errorsInterface, mangadexMangaInterface } from "./src/API/mangadexAPI";
 import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
 import getMangasee123Manga from "./src/webscraper/mangasee123/getMangasee123Manga";
 import getMangasee123Chapter from "./src/webscraper/mangasee123/getMangasee123Chapter";
