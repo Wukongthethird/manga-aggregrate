@@ -42,7 +42,6 @@ const searchMangasee123Author = async (author: string) => {
       const author = await r
         .locator("[ng-click='vm.Search.Author = Author; vm.UpdateLink();']")
         .allInnerTexts();
-      console.log(author);
       current["author"] = author ? author : [];
       res.push(current);
     }

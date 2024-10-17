@@ -18,7 +18,8 @@ import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee1
 import getMangasee123Manga from "./src/webscraper/mangasee123/getMangasee123Manga";
 import getMangasee123Chapter from "./src/webscraper/mangasee123/getMangasee123Chapter";
 import searchMangasee123Author from "./src/webscraper/mangasee123/searchMangasee123Author";
-import filterMangadexAuthorManga from "./src/functions/filterMangadexAuthorManga";
+import findMangadexManga from "./src/functions/findMangadexManga";
+import findMangasee123Manga from "./src/functions/findMangasee123Manga";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -138,14 +139,9 @@ app.post(
       // for (const mangadexAuthor of mangadexAuthorResults) {
       //   if (mangadexAuthor.name.toLowerCase() === author.toLowerCase()) {
       //     // returns mangaId for mangdex
-      const mangadexMangaId = await filterMangadexAuthorManga(
-        authors,
-        mangaTitles
-      );
-      //   }
-      // }
-      // }
-      // }
+      const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
+      const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
+      console.log(mangasee123Link, mangadexMangaId);
     }
   }
 );
