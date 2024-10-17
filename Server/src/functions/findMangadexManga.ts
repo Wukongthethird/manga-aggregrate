@@ -31,6 +31,7 @@ const filterMangadexAuthorManga = async (
       }
     }
   }
+
   if (listOfAuthorManga) {
     for (const authorWorks of listOfAuthorManga) {
       const mTitle = Object.values(authorWorks.title)[0] as string;
@@ -42,6 +43,7 @@ const filterMangadexAuthorManga = async (
       // mangaNames.push(mTitle.toLowerCase());
       for (const altTitle of authorWorks.altTitle) {
         const currentTitle = Object.values(altTitle)[0] as string;
+        // maybe jsut do a match on all titles instead of english
         if (currentTitle.match(/[a-zA-Z0-9]/g)) {
           if (mangaTitlesSet.has(currentTitle.toLowerCase())) {
             return authorWorks.mangaId;

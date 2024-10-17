@@ -41,8 +41,10 @@ app.get(
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await searchMangasee123Manga();
-    // const manga = await mangadexAPI.searchAuthor("ueno");
-    const manga = await searchMangasee123Author("ueno");
+    const manga = await mangadexAPI.getMangaDetails(
+      "7873dd0e-131f-4f40-8a92-32601713e1da"
+    );
+    // const manga = await searchMangasee123Author("ueno");
     response.status(200).json({ data: manga });
   }
 );

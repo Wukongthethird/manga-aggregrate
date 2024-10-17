@@ -23,3 +23,5 @@ mangaupdates - search by author match by title if match brings data. mangadex re
 mangasee123 same by autho and function to scan through list of author to see if manga is included
 mangaupdates UUID (get title and author) -> search by author -> scan for exact author match -> then search list of manga for match if match return data
 client home page
+
+typescript stuff on back end and some validation

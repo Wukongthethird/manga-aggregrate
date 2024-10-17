@@ -6,11 +6,16 @@ dotenv.config();
 //clean up interfeace later for review rewrite so mangainterface is applicable to the data given in api
 export interface mangaInterface {
   mangaId: string;
-  title: string;
+  title: title;
   link?: string;
-  altTitles: string[];
+  altTitles: title[];
   coverArtImageURL?: string;
   //author and artist later if wanted
+}
+export interface authorWorks {
+  authorId: string;
+  name: string;
+  mangaList: mangaInterface[];
 }
 
 // export interface getMangaInterface {
@@ -19,6 +24,10 @@ export interface mangaInterface {
 //   altTitles?: string[];
 //   coverArtImageURL?: string;
 // }
+
+export interface title {
+  [key: string]: string;
+}
 
 export interface newChapterInterface {
   chapterId: string;
@@ -172,17 +181,17 @@ export default class mangadexAPI {
 
     //coverart iID no idea what its for but use file name for image
     const resData = res?.data.data;
-    const title = resData.attributes.title.en;
+    const title = resData.attributes.title;
     let coverArtImageURL;
-    const altTitles = [];
-    const altTitlesArr = resData.attributes.altTitles;
-    for (let i = 0; i < altTitlesArr.length; i++) {
-      if (altTitlesArr[i]["en"]) {
-        altTitles.push(altTitlesArr[i]["en"]);
-      } else if (altTitlesArr[i]["ja-ro"]) {
-        altTitles.push(altTitlesArr[i]["ja-ro"]);
-      }
-    }
+    // const altTitles = [];
+    const altTitles = resData.attributes.altTitles;
+    // for (let i = 0; i < altTitlesArr.length; i++) {
+    //   if (altTitlesArr[i]["en"]) {
+    //     altTitles.push(altTitlesArr[i]);
+    //   } else if (altTitlesArr[i]["ja-ro"]) {
+    //     altTitles.push(altTitlesArr[i]);
+    //   }
+    // }
     for (let i = 0; i < resData.relationships.length; i++) {
       if (resData.relationships[i].type === "cover_art") {
         coverArtImageURL = resData.relationships[i].attributes.fileName;
@@ -218,7 +227,9 @@ export default class mangadexAPI {
     if (resData.length) {
       for (let i = 0; i < resData.length; i++) {
         const mangaId = resData[i]?.id;
+
         const title = resData[i]?.attributes?.title.en;
+
         const link = `https://mangadex.org/title/${mangaId}`;
         let coverArtImageURL;
 
@@ -273,7 +284,6 @@ export default class mangadexAPI {
 
         if (relationships) {
           for (let r = 0; r < relationships.length; r++) {
-            // console.log(relationships);
             const mangaId = relationships[r].id;
             const title = relationships[r]?.attributes?.title;
             const altTitle = relationships[r]?.attributes?.altTitles;
@@ -384,7 +394,6 @@ export default class mangadexAPI {
         method: "Get",
         url: `${baseURL}/data/${hash}/${images[7]}`,
       });
-      console.log(res2);
     } catch (error: any) {
       console.log(error.data.errors);
     }
