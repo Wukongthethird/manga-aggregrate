@@ -4,7 +4,25 @@ const locateLoadMore = async (page: Page) => {
   return await page.getByRole("button", { name: "Load More..." }).all();
 };
 
-const searchMangasee123Author = async (author: string) => {
+export interface errorMessageInterface {
+  status: string;
+  detail: string;
+  cause?: string;
+}
+
+export interface errorsInterface {
+  errors: errorMessageInterface[];
+}
+
+export interface authorManga {
+  title: string;
+  mangaLink: string;
+  author: string[];
+}
+
+const searchMangasee123Author = async (
+  author: string
+): Promise<errorsInterface | authorManga[]> => {
   //   const author = "ueno";
   const maxTries = 3;
   let tries = 0;
@@ -47,6 +65,7 @@ const searchMangasee123Author = async (author: string) => {
     }
 
     tries = maxTries;
+    console.log("webscraper", res);
     return res;
   } catch (error) {
     tries++;

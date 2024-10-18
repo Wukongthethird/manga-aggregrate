@@ -41,11 +41,14 @@ app.get(
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await searchMangasee123Manga();
-    const manga = await mangadexAPI.getMangaDetails(
+    // const manga = await mangadexAPI.getMangaDetails(
+    //   "7873dd0e-131f-4f40-8a92-32601713e1da"
+    // );
+    const manga = await mangadexAPI.getMangaChapterList(
       "7873dd0e-131f-4f40-8a92-32601713e1da"
     );
     // const manga = await searchMangasee123Author("ueno");
-    response.status(200).json({ data: manga });
+    response.status(200).json(manga);
   }
 );
 
@@ -77,7 +80,10 @@ app.post(
     const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
     const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
     const pageAndChapter = {
-      data: { chapters: mangadexChapter.data, manga: { ...mangadexPage } },
+      data: {
+        chapters: mangadexChapter.chapterList,
+        manga: { ...mangadexPage },
+      },
     };
     return response.status(200).json({ data: pageAndChapter });
   }
@@ -130,20 +136,10 @@ app.post(
       );
 
       const authors = resMangaUpdatesAPI.author;
-
-      // for (const author of authors) {
-
-      //   const mangadexAuthorResults = await mangadexAPI.searchAuthor(
-      //     author.toLowerCase()
-      //   );
-
-      // if (mangadexAuthorResults) {
-      // for (const mangadexAuthor of mangadexAuthorResults) {
-      //   if (mangadexAuthor.name.toLowerCase() === author.toLowerCase()) {
-      //     // returns mangaId for mangdex
       const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
       const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
-      console.log(mangasee123Link, mangadexMangaId);
+
+      // probably only want chapter list no need for metadata on Mangasite
     }
   }
 );

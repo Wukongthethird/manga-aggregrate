@@ -24,6 +24,7 @@ export interface chapter {
 
 // need to implement way to check title while searching mangas
 
+//pass the baseurl with the manga
 const getMangasee123Manga = async (): Promise<
   errorsInterface | mangasee123Manga
 > => {

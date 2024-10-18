@@ -52,7 +52,7 @@ export interface chapterInterface {
 }
 
 export interface chapterListInterface {
-  data: chapterInterface[];
+  chapterList: chapterInterface[];
   errors?: errorMessageInterface[];
 }
 
@@ -307,6 +307,7 @@ export default class mangadexAPI {
 
   // api can only retrieve 100 chapters at a time will need to concat res
 
+  // made a custome interface incase chapter is null
   static async getMangaChapterList(
     mangaId: string,
     limit: number = 100,
@@ -314,7 +315,7 @@ export default class mangadexAPI {
     start: number = 0
   ): Promise<chapterListInterface> {
     const response = {
-      data: [] as chapterInterface[],
+      chapterList: [] as chapterInterface[],
       errors: [] as errorMessageInterface[],
     };
 
@@ -359,7 +360,7 @@ export default class mangadexAPI {
         const totalPages = chapter.attributes?.pages;
         const readableAt = chapter.attributes?.readableAt;
 
-        response.data.push({ chapterId, chapterNumber, totalPages });
+        response.chapterList.push({ chapterId, chapterNumber, totalPages });
         //early break to get out of while loop
         if (+chapterNumber >= realEnd || +chapterNumber >= totalChapters) {
           searchCondition = false;

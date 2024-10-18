@@ -39,7 +39,6 @@ const filterMangadexAuthorManga = async (
       if (mangaTitlesSet.has(mTitle.toLowerCase())) {
         return authorWorks.mangaId;
       }
-
       // mangaNames.push(mTitle.toLowerCase());
       for (const altTitle of authorWorks.altTitles) {
         const currentTitle = Object.values(altTitle)[0] as string;
