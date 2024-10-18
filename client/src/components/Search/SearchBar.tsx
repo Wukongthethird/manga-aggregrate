@@ -1,27 +1,24 @@
 import { Input, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import API from "@/api/API";
-
-export interface searchMangaUpdatesInterface {
-  mangaId: string;
-  title: string;
-  imageURL: string;
-  link: string;
-  description: string;
-}
+import { mangaUpdatesMangaInterface } from "./SearchPage";
 
 type SearchBarProps = {
   setSearchResult: React.Dispatch<
-    React.SetStateAction<searchMangaUpdatesInterface[]>
+    React.SetStateAction<mangaUpdatesMangaInterface[]>
   >;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<string>>;
+  setTotalHits: React.Dispatch<React.SetStateAction<number>>;
+  setPerPage: React.Dispatch<React.SetStateAction<number>>;
 };
 // props will contain mangalist
 const SearchBar: React.FC<SearchBarProps> = ({
   setSearchResult,
   setLoading,
   setError,
+  setTotalHits,
+  setPerPage,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   //onsubmit probably should be handed from parent. requesting data onhome page about manga
@@ -37,7 +34,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
       } else if (res?.data?.errors) {
         setError("something is down on mangaUpdates");
       } else {
-        setSearchResult(res.data);
+        setSearchResult(res.data.results);
+        setTotalHits(res.data.totalHits);
+        setPerPage(res.data.perPage);
       }
     } catch (error) {
       console.log("SEARCHBARAPI ERROR", error);

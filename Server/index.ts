@@ -9,9 +9,7 @@ import errorHandler from "./src/middlewares/errorHandler";
 
 //manga related
 import mangadexAPI from "./src/API/mangadexAPI";
-import mangaUpdatesAPI, {
-  getMangaUpdatesManga,
-} from "./src/API/mangaUpdatesAPI";
+import mangaUpdatesAPI, { mangaUpdatesManga } from "./src/API/mangaUpdatesAPI";
 import searchUpdatedMangasee123 from "./src/webscraper/mangasee123/searchUpdatedMangasee123";
 import { errorsInterface, mangadexMangaInterface } from "./src/API/mangadexAPI";
 import searchMangasee123Manga from "./src/webscraper/mangasee123/searchMangasee123Manga";
@@ -78,6 +76,7 @@ app.post(
   async (request: Request, response: Response, next: NextFunction) => {
     const mangaId = request.body.mangaId;
     const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
+    /// mayne dont need metadata
     const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
     const pageAndChapter = {
       data: {
@@ -121,7 +120,7 @@ app.post(
     // mangaId on mangaupdates
 
     const mangaId = request.body.mangaId;
-    const resMangaUpdatesAPI: errorsInterface | getMangaUpdatesManga =
+    const resMangaUpdatesAPI: errorsInterface | mangaUpdatesManga =
       await mangaUpdatesAPI.getManga(mangaId);
     //array of author may need to process one by one?
     // console.log(resMangaUpdatesAPI);
@@ -131,14 +130,16 @@ app.post(
 
     // filter by author is here
     if ("author" in resMangaUpdatesAPI) {
-      const mangaTitles = [resMangaUpdatesAPI.title].concat(
-        resMangaUpdatesAPI.altTitles
-      );
+      const mangaTitles = [resMangaUpdatesAPI.title];
+      if (resMangaUpdatesAPI.altTitles) {
+        mangaTitles.push(...resMangaUpdatesAPI.altTitles);
+      }
 
-      const authors = resMangaUpdatesAPI.author;
+      const authors = resMangaUpdatesAPI.author as string[];
       const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
       const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
 
+      // return these 2 references,
       // probably only want chapter list no need for metadata on Mangasite
     }
   }

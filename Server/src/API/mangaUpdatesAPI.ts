@@ -1,13 +1,20 @@
 "use strict";
 import axios from "axios";
 
-export interface searchMangaUpdatesInterface {
-  mangaId: string;
-  title: string;
-  imageURL: string;
-  link: string;
-  description: string;
+export interface searchMangaUpdatesResultsInterface {
+  totalHits: number;
+  perPage: number;
+  page: number;
+  results: mangaUpdatesManga[];
 }
+
+// export interface searchMangaUpdatesMangaInterface {
+//   mangaId: string;
+//   title: string;
+//   imageURL: string;
+//   link: string;
+//   description: string;
+// }
 
 export interface errorMessageInterface {
   status: string;
@@ -18,14 +25,15 @@ export interface errorsInterface {
   errors: errorMessageInterface[];
 }
 
-export interface getMangaUpdatesManga {
+export interface mangaUpdatesManga {
   mangaId: string;
   title: string;
   link: string;
   imageURL: string;
-  altTitles: string[];
-  author: string[];
-  artist: string[];
+  description?: string;
+  altTitles?: string[];
+  author?: string[];
+  artist?: string[];
 }
 
 // this should be use to validate I guess
@@ -60,11 +68,17 @@ export default class mangaUpdatesAPI {
   }
 
   static async searchManga(
-    title: string
-  ): Promise<errorsInterface | searchMangaUpdatesInterface[]> {
-    const data = { search: title };
+    title: string,
+    page: number = 1
+  ): Promise<errorsInterface | searchMangaUpdatesResultsInterface> {
+    const data = { search: title, page: page };
     const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
-    const response = [];
+    const response = {
+      totalHits: 0,
+      perPage: 0,
+      page: 0,
+      results: [] as mangaUpdatesManga[],
+    };
     //return errors here
     if (mangapdatesRes.status === 500) {
       const apiErrors = mangapdatesRes.data;
@@ -74,7 +88,12 @@ export default class mangaUpdatesAPI {
 
       return { errors: [{ status, detail }] };
     }
-
+    const totalHits = mangapdatesRes.data.total_hits;
+    const perPage = mangapdatesRes.data.per_page;
+    const muPage = mangapdatesRes.data.page;
+    response.totalHits = totalHits ? totalHits : 0;
+    response.perPage = perPage ? perPage : 0;
+    response.page = muPage ? muPage : 0;
     const searchresults = mangapdatesRes.data.results;
     if (searchresults) {
       for (let sr of searchresults) {
@@ -84,7 +103,7 @@ export default class mangaUpdatesAPI {
         const link = sr?.record?.url;
         const description = sr?.record?.description;
 
-        response.push({ mangaId, title, imageURL, link, description });
+        response.results.push({ mangaId, title, imageURL, link, description });
       }
     }
     return response;
@@ -92,7 +111,7 @@ export default class mangaUpdatesAPI {
 
   static async getManga(
     mangaId: string
-  ): Promise<errorsInterface | getMangaUpdatesManga> {
+  ): Promise<errorsInterface | mangaUpdatesManga> {
     const mangapdatesRes = await this.request(`v1/series/${mangaId}`);
 
     if (mangapdatesRes.status === 500) {

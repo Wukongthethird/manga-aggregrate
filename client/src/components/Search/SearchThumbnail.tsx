@@ -16,7 +16,6 @@ type SearchThumbnail = {
   title: string;
   imageURL: string;
   link: string;
-  description: string;
 };
 
 //
@@ -26,7 +25,6 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
   title,
   imageURL,
   link,
-  description,
 }) => {
   return (
     <Flex

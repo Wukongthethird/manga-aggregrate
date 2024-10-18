@@ -1,17 +1,10 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
-import SearchThumbnail from "./searchThumbnail";
-
-interface searchResult {
-  mangaId: string;
-  title: string;
-  imageURL: string;
-  link: string;
-  description: string;
-}
+import SearchThumbnail from "./SearchThumbnail";
+import { mangaUpdatesManga } from "./SearchPage";
 
 type SearchResultProps = {
-  searchResult: searchResult[];
+  searchResult: mangaUpdatesManga[];
 };
 
 const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
@@ -25,7 +18,6 @@ const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
             imageURL={item.imageURL}
             mangaId={item.mangaId}
             link={item.link}
-            description={item.description}
           />
         );
       })}
