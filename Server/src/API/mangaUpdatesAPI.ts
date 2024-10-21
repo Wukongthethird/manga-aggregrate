@@ -1,5 +1,6 @@
 "use strict";
 import axios from "axios";
+import mangadexAPI from "./mangadexAPI";
 
 export interface searchMangaUpdatesResultsInterface {
   totalHits: number;
@@ -29,7 +30,10 @@ export interface mangaUpdatesManga {
   mangaId: string;
   title: string;
   link: string;
-  imageURL: string;
+  imageURL: {
+    original: string;
+    thumb: string;
+  };
   description?: string;
   altTitles?: string[];
   author?: string[];
@@ -73,6 +77,7 @@ export default class mangaUpdatesAPI {
   ): Promise<errorsInterface | searchMangaUpdatesResultsInterface> {
     const data = { search: title, page: page };
     const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
+    console.log("api", mangapdatesRes.data);
     const response = {
       totalHits: 0,
       perPage: 0,
@@ -112,41 +117,50 @@ export default class mangaUpdatesAPI {
   static async getManga(
     mangaId: string
   ): Promise<errorsInterface | mangaUpdatesManga> {
-    const mangapdatesRes = await this.request(`v1/series/${mangaId}`);
+    try {
+      const mangapdatesRes = await this.request(`v1/series/${mangaId}`);
 
-    if (mangapdatesRes.status === 500) {
-      const apiErrors = mangapdatesRes.data;
+      if (mangapdatesRes.status === 404) {
+        const status = mangapdatesRes.status;
+        const detail = mangapdatesRes.statusText;
+        return { errors: [{ status, detail }] };
+      }
 
-      const status = apiErrors.status;
-      const detail = apiErrors.reason;
-      return { errors: [{ status, detail }] };
-    }
+      if (mangapdatesRes.status === 500) {
+        const status = mangapdatesRes.data;
+        const detail = mangapdatesRes.statusText;
+        return { errors: [{ status, detail }] };
+      }
 
-    const mangaInfo = mangapdatesRes?.data;
-    const title = mangaInfo.title;
-    const link = mangaInfo.url;
-    const imageURL = mangaInfo.image.url;
-    const altTitles = [];
-    if (mangaInfo?.associated) {
-      for (let t of mangaInfo?.associated) {
-        if (t.title.match(/[a-zA-Z0-9]/g)) {
-          altTitles.push(t.title);
+      const mangaInfo = mangapdatesRes?.data;
+      const title = mangaInfo.title;
+      const link = mangaInfo.url;
+      const imageURL = mangaInfo.image.url;
+      const altTitles = [];
+      if (mangaInfo?.associated) {
+        for (let t of mangaInfo?.associated) {
+          if (t.title.match(/[a-zA-Z0-9]/g)) {
+            altTitles.push(t.title);
+          }
         }
       }
-    }
-    const author = [];
-    const artist = [];
-    if (mangaInfo?.authors) {
-      for (let a of mangaInfo?.authors) {
-        if (a.type == "Author") {
-          author.push(a.name);
-        }
-        if (a.type == "Artist") {
-          artist.push(a.name);
+      const author = [];
+      const artist = [];
+      if (mangaInfo?.authors) {
+        for (let a of mangaInfo?.authors) {
+          if (a.type == "Author") {
+            author.push(a.name);
+          }
+          if (a.type == "Artist") {
+            artist.push(a.name);
+          }
         }
       }
-    }
 
-    return { mangaId, title, link, imageURL, altTitles, artist, author };
+      return { mangaId, title, link, imageURL, altTitles, artist, author };
+    } catch (error: any) {
+      console.log("getmangaupdatesAPI", error);
+    }
+    return { errors: [{ status: "400", detail: "something bad happened" }] };
   }
 }

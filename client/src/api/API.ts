@@ -22,8 +22,17 @@ class API {
       console.log("API ERROR", error);
     }
   }
-  static async searchMangaUpdates(title: string) {
-    const res = await API.request("searchmangaupdates", { title });
+  static async searchMangaUpdates(title: string, pageNumber: string) {
+    const res = await API.request("searchmangaupdates", { title, pageNumber });
+    console.log("res", res);
+    return res;
+  }
+
+  // maybe have this call directly to api elsewhere?
+
+  static async getmangaupdatesmangainfo(mangaId: string) {
+    const res = await API.request("getmangaupdatesmangainfo", { mangaId });
+
     return res;
   }
 }

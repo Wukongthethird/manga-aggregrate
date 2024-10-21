@@ -4,46 +4,11 @@ import API from "@/api/API";
 import { mangaUpdatesMangaInterface } from "./SearchPage";
 
 type SearchBarProps = {
-  setSearchResult: React.Dispatch<
-    React.SetStateAction<mangaUpdatesMangaInterface[]>
-  >;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setError: React.Dispatch<React.SetStateAction<string>>;
-  setTotalHits: React.Dispatch<React.SetStateAction<number>>;
-  setPerPage: React.Dispatch<React.SetStateAction<number>>;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: () => void;
 };
 // props will contain mangalist
-const SearchBar: React.FC<SearchBarProps> = ({
-  setSearchResult,
-  setLoading,
-  setError,
-  setTotalHits,
-  setPerPage,
-}) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  //onsubmit probably should be handed from parent. requesting data onhome page about manga
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    setLoading(true);
-    try {
-      const res = await API.searchMangaUpdates(searchTerm);
-      console.log("here , res", res);
-      if (!res) {
-        setError("server is down");
-      } else if (res?.data?.errors) {
-        setError("something is down on mangaUpdates");
-      } else {
-        setSearchResult(res.data.results);
-        setTotalHits(res.data.totalHits);
-        setPerPage(res.data.perPage);
-      }
-    } catch (error) {
-      console.log("SEARCHBARAPI ERROR", error);
-      // setError(`${error}`)
-    }
-    setLoading(false);
-  };
+const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm, onSubmit }) => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -56,7 +21,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
       borderRadius={4}
       width={"100%"}
     >
-      <form onSubmit={onSubmit}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
         <Input
           width={"600px"}
           required

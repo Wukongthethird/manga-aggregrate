@@ -24,4 +24,6 @@ mangasee123 same by autho and function to scan through list of author to see if 
 mangaupdates UUID (get title and author) -> search by author -> scan for exact author match -> then search list of manga for match if match return data
 client home page
 
+add a page changer on search results traverse different search results do error handling
+
 typescript stuff on back end and some validation

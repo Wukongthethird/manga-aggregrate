@@ -11,7 +11,6 @@ export interface searchMangaUpdatesInterface {
 }
 
 const Page: React.FC = () => {
-  console.log("found");
   return (
     <>
       <SearchPage />

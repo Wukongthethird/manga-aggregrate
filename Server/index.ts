@@ -92,7 +92,8 @@ app.post(
   "/searchmangaupdates",
   async (request: Request, response: Response, next: NextFunction) => {
     const title = request.body.title;
-    const resAPI = await mangaUpdatesAPI.searchManga(title);
+    const pageNumber = request.body.pageNumber;
+    const resAPI = await mangaUpdatesAPI.searchManga(title, pageNumber);
 
     if (resAPI.hasOwnProperty("error")) {
       return response.status(404).json(resAPI);
