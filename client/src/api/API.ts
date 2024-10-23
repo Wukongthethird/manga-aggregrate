@@ -24,7 +24,6 @@ class API {
   }
   static async searchMangaUpdates(title: string, pageNumber: string) {
     const res = await API.request("searchmangaupdates", { title, pageNumber });
-    console.log("res", res);
     return res;
   }
 
@@ -32,6 +31,18 @@ class API {
 
   static async getmangaupdatesmangainfo(mangaId: string) {
     const res = await API.request("getmangaupdatesmangainfo", { mangaId });
+
+    return res;
+  }
+
+  static async findmangaonmangadex(mangaId: string) {
+    const res = await API.request("findmangaonmangadex", { mangaId });
+
+    return res;
+  }
+
+  static async findmangaonmangasee123(site: string) {
+    const res = await API.request("findmangaonmangasee123", { site });
 
     return res;
   }

@@ -25,5 +25,5 @@ mangaupdates UUID (get title and author) -> search by author -> scan for exact a
 client home page
 
 add a page changer on search results traverse different search results do error handling
-
+create a window for chapters,
 typescript stuff on back end and some validation

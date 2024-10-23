@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import API from "@/api/API";
+import ChapterContainer from "./Chapters/ChapterContainer";
 
 type mangaInfoProps = {
   mangaId: string;
@@ -27,6 +29,7 @@ export interface errorsInterface {
 }
 
 const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
+  console.log("mangaId", mangaId);
   const [mangaUpdatesInfo, setMangaUpdatesInfo] = useState<mangaUpdatesRes>({
     mangaId: "",
     title: "",
@@ -39,10 +42,34 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
     artist: [],
     author: [],
   });
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  console.log(mangaUpdatesInfo);
-  return <div>Have a good coding</div>;
+  useEffect(() => {
+    const fetchMangaUpdatesData = async () => {
+      setLoading(true);
+      try {
+        const res = await API.getmangaupdatesmangainfo(mangaId);
+        if (res && res.data) {
+          setMangaUpdatesInfo(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+
+    fetchMangaUpdatesData();
+  }, []);
+
+  if (loading) {
+    return "...fetching data";
+  }
+  return (
+    <>
+      <div>thiggg</div>
+      <ChapterContainer mangaId={mangaId} />
+    </>
+  );
 };
 export default MangaInfo;

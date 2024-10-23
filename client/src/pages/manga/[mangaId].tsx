@@ -9,7 +9,7 @@ import MangaInfo from "@/components/Manga/mangaInfo";
 
 const Page: React.FC = () => {
   const router = useRouter();
-  const mangaId = router.query;
+  const mangaId = router.query.mangaId;
 
   return (
     <div>{typeof mangaId === "string" && <MangaInfo mangaId={mangaId} />}</div>

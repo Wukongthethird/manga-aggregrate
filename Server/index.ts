@@ -116,7 +116,7 @@ app.post(
 );
 
 app.post(
-  "/findmangaonsites",
+  "/findmangaonmangadex",
   async (request: Request, response: Response, next: NextFunction) => {
     // mangaId on mangaupdates
 
@@ -138,8 +138,39 @@ app.post(
 
       const authors = resMangaUpdatesAPI.author as string[];
       const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
-      const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
+      return response.status(200).json({ mangadexMangaId });
 
+      // return these 2 references,
+      // probably only want chapter list no need for metadata on Mangasite
+    }
+  }
+);
+
+app.post(
+  "/findmangaonmangasee123",
+  async (request: Request, response: Response, next: NextFunction) => {
+    // mangaId on mangaupdates
+
+    const mangaId = request.body.site;
+    const resMangaUpdatesAPI: errorsInterface | mangaUpdatesManga =
+      await mangaUpdatesAPI.getManga(mangaId);
+    //array of author may need to process one by one?
+    // console.log(resMangaUpdatesAPI);
+    if (resMangaUpdatesAPI.hasOwnProperty("errors")) {
+      return response.status(404).json(resMangaUpdatesAPI);
+    }
+
+    // filter by author is here
+    if ("author" in resMangaUpdatesAPI) {
+      const mangaTitles = [resMangaUpdatesAPI.title];
+      if (resMangaUpdatesAPI.altTitles) {
+        mangaTitles.push(...resMangaUpdatesAPI.altTitles);
+      }
+
+      const authors = resMangaUpdatesAPI.author as string[];
+
+      const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
+      return response.status(200).json({ mangasee123Link });
       // return these 2 references,
       // probably only want chapter list no need for metadata on Mangasite
     }
