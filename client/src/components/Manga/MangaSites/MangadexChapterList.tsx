@@ -99,8 +99,8 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, [mangadexMangaId]);
+  console.log(mangadexManga);
 
-  console.log("chapterlist", mangadexManga);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 

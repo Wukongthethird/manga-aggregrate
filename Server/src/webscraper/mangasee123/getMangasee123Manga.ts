@@ -11,8 +11,10 @@ export interface errorsInterface {
 }
 
 export interface mangasee123Manga {
-  title: string;
-  author: string[];
+  manga: {
+    title: string;
+    author: string[];
+  };
   chapters: chapter[];
 }
 
@@ -25,19 +27,21 @@ export interface chapter {
 // need to implement way to check title while searching mangas
 
 //pass the baseurl with the manga
-const getMangasee123Manga = async (): Promise<
-  errorsInterface | mangasee123Manga
-> => {
-  const titleId = "99-Reinforced-Wooden-Stick";
+const getMangasee123Manga = async (
+  site: string
+): Promise<errorsInterface | mangasee123Manga> => {
   const maxTries = 3;
   let tries = 0;
-  const baseURL = "https://mangasee123.com";
+  const baseURL = "https://mangasee123.com"; //use this as validation
   const browser = await chromium.launch();
   const page = await browser.newPage();
   while (tries < maxTries) {
     try {
-      const res = { title: "", author: [] as string[], chapters: [] as any };
-      await page.goto(`${baseURL}/manga/${titleId}`);
+      const res = {
+        manga: { title: "", author: [] as string[] },
+        chapters: [] as any,
+      };
+      await page.goto(site);
       const showAllChapterButton = await page
         .locator(".ShowAllChapters")
         .first();
@@ -50,11 +54,13 @@ const getMangasee123Manga = async (): Promise<
         .first()
         .innerText();
 
-      res["title"] = title ? title.replace(/\t/g, "").replace("\n", "") : "";
+      res.manga["title"] = title
+        ? title.replace(/\t/g, "").replace("\n", "")
+        : "";
       const author = await page
         .locator("[href^='/search/?author=']")
         .allInnerTexts();
-      res["author"] = author ? author : [];
+      res.manga["author"] = author ? author : [];
 
       const chapterListRes = await page
         .locator(".list-group-item.ChapterLink.ng-scope")
@@ -75,7 +81,7 @@ const getMangasee123Manga = async (): Promise<
         res.chapters.push(current);
       }
 
-      await page.screenshot({ path: "page.png", fullPage: true });
+      // await page.screenshot({ path: "page.png", fullPage: true });
       tries = maxTries;
       return res;
     } catch (error) {

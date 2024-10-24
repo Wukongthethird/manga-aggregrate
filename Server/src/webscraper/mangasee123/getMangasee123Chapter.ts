@@ -14,8 +14,6 @@ const getMangasee123Chapter = async () => {
   await page.goto(`${baseURL}/read-online/${chapterId}`);
   const mangaImages = await page.locator(".img-fluid.HasGap").all();
 
-  await page.screenshot({ path: "page.png", fullPage: true });
-
   for (const mI of mangaImages) {
     const link = await mI.getAttribute("src");
     res.push(link);
