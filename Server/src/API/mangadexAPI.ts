@@ -10,6 +10,7 @@ export interface mangadexMangaInterface {
   link?: string;
   altTitles: title[];
   coverArtImageURL?: string;
+  author?: string[];
   //author and artist later if wanted
 }
 export interface authorWorks {
@@ -160,7 +161,7 @@ export default class mangadexAPI {
   ): Promise<errorsInterface | mangadexMangaInterface> {
     // const r = Math.random();
     // const url = r > 0.5 ? `manga/${id}` : `manga${id}`;
-    const data = { includes: ["cover_art"] };
+    const data = { includes: ["cover_art", "author"] };
     const res = await this.request(`manga/${mangaId}`, data);
 
     //may need to loop if res.erros get multiple errors. only see one in array
@@ -180,11 +181,15 @@ export default class mangadexAPI {
     }
 
     //coverart iID no idea what its for but use file name for image
-    const resData = res?.data.data;
-    const title = resData.attributes.title;
+
+    const resData = res?.data?.data;
+
+    const title = resData?.attributes?.title;
+
     let coverArtImageURL;
     // const altTitles = [];
-    const altTitles = resData.attributes.altTitles;
+    let author: string[] = [];
+    const altTitles = resData?.attributes?.altTitles;
     // for (let i = 0; i < altTitlesArr.length; i++) {
     //   if (altTitlesArr[i]["en"]) {
     //     altTitles.push(altTitlesArr[i]);
@@ -192,12 +197,17 @@ export default class mangadexAPI {
     //     altTitles.push(altTitlesArr[i]);
     //   }
     // }
-    for (let i = 0; i < resData.relationships.length; i++) {
-      if (resData.relationships[i].type === "cover_art") {
-        coverArtImageURL = resData.relationships[i].attributes.fileName;
+    if (resData.relationships) {
+      for (let i = 0; i < resData?.relationships.length; i++) {
+        if (resData.relationships[i].type === "cover_art") {
+          coverArtImageURL = resData.relationships[i].attributes.fileName;
+        }
+        if (resData.relationships[i].type === "author") {
+          author.push(resData.relationships[i]?.attributes?.name);
+        }
       }
     }
-    return { mangaId, title, altTitles, coverArtImageURL };
+    return { mangaId, title, altTitles, author, coverArtImageURL };
   }
 
   static async searchManga(
@@ -232,7 +242,7 @@ export default class mangadexAPI {
 
         const link = `https://mangadex.org/title/${mangaId}`;
         let coverArtImageURL;
-
+        let author: string[] = [];
         const altTitles = resData[i]?.attributes?.altTitles
           ?.filter((title: { en: string }) => title.en)
           .map((title: { en: string }) => title.en);
@@ -243,7 +253,14 @@ export default class mangadexAPI {
           }
         }
 
-        response.push({ mangaId, title, link, altTitles, coverArtImageURL });
+        response.push({
+          mangaId,
+          title,
+          link,
+          author,
+          altTitles,
+          coverArtImageURL,
+        });
       }
     }
     return response;

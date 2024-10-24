@@ -4,13 +4,13 @@ import TabItem from "./TabItem";
 import MangadexChapterList from "./MangadexChapterList";
 import Mangasee123ChapterList from "./Mangasee123ChapterList";
 
-type ChapterContainerProps = {
+type MangaSiteContainerProps = {
   mangaId: string;
 };
 
 const siteTab: string[] = ["Mangadex", "Mangasee123"];
 
-const ChapterContainer: React.FC<ChapterContainerProps> = ({ mangaId }) => {
+const MangaSiteContainer: React.FC<MangaSiteContainerProps> = ({ mangaId }) => {
   const [selectedTab, setSelectedTab] = useState(siteTab[0]);
 
   return (
@@ -36,4 +36,4 @@ const ChapterContainer: React.FC<ChapterContainerProps> = ({ mangaId }) => {
     </Flex>
   );
 };
-export default ChapterContainer;
+export default MangaSiteContainer;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import API from "@/api/API";
-import ChapterContainer from "./Chapters/ChapterContainer";
+import MangaSiteContainer from "./MangaSites/MangaSiteContainer";
 
 type mangaInfoProps = {
   mangaId: string;
@@ -68,7 +68,7 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
   return (
     <>
       <div>thiggg</div>
-      <ChapterContainer mangaId={mangaId} />
+      <MangaSiteContainer mangaId={mangaId} />
     </>
   );
 };

@@ -43,7 +43,11 @@ class API {
 
   static async findmangaonmangasee123(site: string) {
     const res = await API.request("findmangaonmangasee123", { site });
+    return res;
+  }
 
+  static async getmangadexpage(mangaId: string) {
+    const res = await API.request("getmangadexpage", { mangaId });
     return res;
   }
 }
