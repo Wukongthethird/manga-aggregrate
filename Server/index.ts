@@ -79,10 +79,8 @@ app.post(
     /// mayne dont need metadata
     const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
     const pageAndChapter = {
-      data: {
-        chapters: mangadexChapter.chapterList,
-        manga: { ...mangadexPage },
-      },
+      chapters: mangadexChapter.chapterList,
+      manga: { ...mangadexPage },
     };
     return response.status(200).json({ ...pageAndChapter });
   }

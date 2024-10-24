@@ -165,7 +165,7 @@ export default class mangadexAPI {
     const res = await this.request(`manga/${mangaId}`, data);
 
     //may need to loop if res.erros get multiple errors. only see one in array
-    if (res.errors) {
+    if (res?.errors) {
       const status = res.errors[0].status;
       const detail = res.errors[0].detail;
       const cause = mangaId;
