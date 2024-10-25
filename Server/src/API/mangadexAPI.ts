@@ -351,9 +351,11 @@ export default class mangadexAPI {
         limit: limit,
         offset: newOffset,
         translatedLanguage: ["en"],
+        contentRating: ["safe", "suggestive", "erotica", "pornographic"],
       };
 
       const res = await this.request(`chapter`, body);
+
       if (res.errors) {
         const status = res.errors[0].status;
         const detail = res.errors[0].detail;

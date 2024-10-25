@@ -96,6 +96,7 @@ app.post(
     if (resAPI.hasOwnProperty("error")) {
       return response.status(404).json(resAPI);
     }
+
     return response.status(200).json(resAPI);
   }
 );
@@ -135,9 +136,9 @@ app.post(
       }
 
       const authors = resMangaUpdatesAPI.author as string[];
-      console.log("findonmangadex", authors);
+
       const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
-      console.log(mangadexMangaId);
+
       return response.status(200).json({ mangadexMangaId });
 
       // return these 2 references,

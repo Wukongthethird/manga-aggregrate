@@ -49,7 +49,6 @@ const SearchPage: React.FC = () => {
         setSearchResult(res.data.results);
         setTotalHits(res.data.totalHits);
         setPerPage(res.data.perPage);
-
         setLockTerm(searchTerm);
       }
     } catch (error) {

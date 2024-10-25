@@ -16,43 +16,51 @@ const filterMangadexAuthorManga = async (
   for (const t of mangaTitles) {
     mangaTitlesSet.add(t.toLowerCase());
   }
+  try {
+    let listOfAuthorManga: mangadexMangaInterface[] = [];
+    for (const author of authors) {
+      const mangadexAuthorResults = await mangadexAPI.searchAuthor(
+        author.toLowerCase()
+      );
 
-  let listOfAuthorManga: mangadexMangaInterface[] = [];
-  for (const author of authors) {
-    const mangadexAuthorResults = await mangadexAPI.searchAuthor(
-      author.toLowerCase()
-    );
-
-    if (Array.isArray(mangadexAuthorResults)) {
-      for (const aRes of mangadexAuthorResults) {
-        if (author.toLowerCase() === aRes?.name.toLowerCase()) {
-          listOfAuthorManga.push(...aRes.mangaList);
-        }
-      }
-    }
-  }
-
-  if (listOfAuthorManga) {
-    for (const authorWorks of listOfAuthorManga) {
-      const mTitle = Object.values(authorWorks.title)[0] as string;
-
-      if (mangaTitlesSet.has(mTitle.toLowerCase())) {
-        return authorWorks.mangaId;
-      }
-      // mangaNames.push(mTitle.toLowerCase());
-      for (const altTitle of authorWorks.altTitles) {
-        const currentTitle = Object.values(altTitle)[0] as string;
-        // maybe jsut do a match on all titles instead of english
-        if (currentTitle.match(/[a-zA-Z0-9]/g)) {
-          if (mangaTitlesSet.has(currentTitle.toLowerCase())) {
-            return authorWorks.mangaId;
+      if (Array.isArray(mangadexAuthorResults)) {
+        for (const aRes of mangadexAuthorResults) {
+          if (author.toLowerCase() === aRes?.name.toLowerCase()) {
+            listOfAuthorManga.push(...aRes.mangaList);
           }
         }
       }
     }
+
+    if (listOfAuthorManga) {
+      for (const authorWorks of listOfAuthorManga) {
+        if (authorWorks.title) {
+          const mTitle = Object.values(authorWorks.title)[0] as string;
+          if (mangaTitlesSet.has(mTitle.toLowerCase())) {
+            return authorWorks.mangaId;
+          }
+        }
+
+        // mangaNames.push(mTitle.toLowerCase());
+        if (authorWorks.altTitles) {
+          for (const altTitle of authorWorks.altTitles) {
+            const currentTitle = Object.values(altTitle)[0] as string;
+            // maybe jsut do a match on all titles instead of english
+
+            if (currentTitle.match(/[a-zA-Z0-9]/g)) {
+              // console.log("alt title", currentTitle);
+              if (mangaTitlesSet.has(currentTitle.toLowerCase())) {
+                console.log("not here yet", currentTitle);
+                return authorWorks.mangaId;
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
-  // return null if nothing
-  //   console.log(mangaTitlesSet, mangaNames);
 };
 
 export default filterMangadexAuthorManga;
