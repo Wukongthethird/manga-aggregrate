@@ -34,7 +34,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
             onSubmit();
           }}
         >
-          <Input defaultValue={page} onChange={onChange} />
+          <Input onChange={onChange} value={page} />
         </form>
         <Box>{Math.ceil(totalHits / perPage)}</Box>
       </Flex>

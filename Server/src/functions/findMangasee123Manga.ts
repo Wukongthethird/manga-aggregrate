@@ -16,7 +16,6 @@ const findMangasee123Manga = async (
 
     // prob need to check this better
     if (mangasee123AuthorResults.hasOwnProperty("error")) {
-      console.log("here");
       return;
     }
     if (Array.isArray(mangasee123AuthorResults)) {

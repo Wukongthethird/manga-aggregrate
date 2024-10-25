@@ -38,7 +38,11 @@ const getMangasee123Manga = async (
   while (tries < maxTries) {
     try {
       const res = {
-        manga: { title: "", author: [] as string[] },
+        manga: {
+          title: "",
+          author: [] as string[],
+          alitTItles: [] as string[],
+        },
         chapters: [] as any,
       };
       await page.goto(site);
