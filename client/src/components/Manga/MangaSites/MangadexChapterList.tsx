@@ -66,6 +66,8 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
 
     fetchMangadexId();
   }, []);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchMangadexInfo = async () => {
@@ -99,10 +101,6 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, [mangadexMangaId]);
-  console.log(mangadexManga);
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   return <div>Have a good mangadex</div>;
 };

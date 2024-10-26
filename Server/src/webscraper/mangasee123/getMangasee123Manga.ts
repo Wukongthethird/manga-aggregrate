@@ -12,8 +12,10 @@ export interface errorsInterface {
 
 export interface mangasee123Manga {
   manga: {
+    site: string;
     title: string;
     author: string[];
+    coverArtImageURL?: string;
   };
   chapters: chapter[];
 }
@@ -39,9 +41,10 @@ const getMangasee123Manga = async (
     try {
       const res = {
         manga: {
+          site,
           title: "",
           author: [] as string[],
-          alitTItles: [] as string[],
+          coverArtImageURL: "",
         },
         chapters: [] as any,
       };
@@ -61,6 +64,14 @@ const getMangasee123Manga = async (
       res.manga["title"] = title
         ? title.replace(/\t/g, "").replace("\n", "")
         : "";
+
+      const coverArtImageURL = await page
+        .locator(".col-md-3.col-sm-4.col-3.top-5")
+        .locator("img")
+        .getAttribute("src");
+
+      res.manga.coverArtImageURL = coverArtImageURL ? coverArtImageURL : "";
+
       const author = await page
         .locator("[href^='/search/?author=']")
         .allInnerTexts();

@@ -50,6 +50,7 @@ export interface chapterInterface {
   chapterId: string;
   chapterNumber: string | undefined;
   totalPages: string;
+  link: string;
 }
 
 export interface chapterListInterface {
@@ -378,8 +379,14 @@ export default class mangadexAPI {
         const chapterNumber = chapter.attributes?.chapter;
         const totalPages = chapter.attributes?.pages;
         const readableAt = chapter.attributes?.readableAt;
+        const link = `https://mangadex.org/chapter/${chapterId}`;
 
-        response.chapterList.push({ chapterId, chapterNumber, totalPages });
+        response.chapterList.push({
+          chapterId,
+          chapterNumber,
+          totalPages,
+          link,
+        });
         //early break to get out of while loop
         if (+chapterNumber >= realEnd || +chapterNumber >= totalChapters) {
           searchCondition = false;

@@ -75,6 +75,9 @@ app.post(
   "/getmangadexpage",
   async (request: Request, response: Response, next: NextFunction) => {
     const mangaId = request.body.mangaId;
+    if (!mangaId) {
+      return;
+    }
     const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
     /// mayne dont need metadata
     const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
@@ -182,8 +185,12 @@ app.post(
   "/getmangasee123page",
   async (request: Request, response: Response, next: NextFunction) => {
     const site = request.body.site;
-    const mangasee123page = await getMangasee123Manga(site);
-    console.log(mangasee123page);
+
+    if (!site) {
+      return;
+    }
+
+    const mangasee123Manga = await getMangasee123Manga(site);
 
     /// mayne dont need metadata
     // const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
@@ -191,7 +198,11 @@ app.post(
     //   chapters: mangadexChapter.chapterList,
     //   manga: { ...mangadexPage },
     // };
-    return response.status(200).json({});
+    console.log("here", mangasee123Manga);
+    if (!mangasee123Manga) {
+      return;
+    }
+    return response.status(200).json({ ...mangasee123Manga });
   }
 );
 
