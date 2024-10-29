@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import API from "@/api/API";
+import MangaSite from "@/layout/MangaSite";
+import { Box, Stack } from "@chakra-ui/react";
+import MangaChapterList from "./MangaChapterList";
+import MangaMetadata from "./MangaMetadata";
+import MangaChapterRow from "./MangaChapterRow";
 
 interface MangadexChapter {
   chapterId: string;
+  link: string;
   chapterNumber: string;
   totalPages: number;
 }
@@ -102,6 +108,23 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     fetchMangadexInfo();
   }, [mangadexMangaId]);
 
-  return <div>Have a good mangadex</div>;
+  return (
+    <MangaSite>
+      <>
+        {mangadexManga.manga.title && (
+          <MangaMetadata
+            coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexMangaId}/${mangadexManga.manga.coverArtImageURL}`}
+            title={Object.values(mangadexManga.manga.title)[0] as string}
+            author={mangadexManga.manga.author}
+          />
+        )}
+      </>
+      <>
+        {mangadexManga.chapters && (
+          <MangaChapterList chaptersList={mangadexManga.chapters} />
+        )}
+      </>
+    </MangaSite>
+  );
 };
 export default MangadexChapterList;

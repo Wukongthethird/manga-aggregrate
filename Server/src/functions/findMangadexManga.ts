@@ -4,9 +4,12 @@ import mangadexAPI from "../API/mangadexAPI";
 import { mangadexMangaInterface } from "../API/mangadexAPI";
 
 // type of autho results in mangadex
+// info is from mangaupdates
 const filterMangadexAuthorManga = async (
   authors: string[],
-  mangaTitles: string[]
+  mangaTitles: string[],
+  publicationYear: string | undefined,
+  status: string | undefined
   //   listOfAuthorManga: any
 ): Promise<void | string> => {
   // let matchedMangadexId;
@@ -34,8 +37,33 @@ const filterMangadexAuthorManga = async (
 
     if (listOfAuthorManga) {
       for (const authorWorks of listOfAuthorManga) {
+        // console.log(
+        //   " search",
+        //   "mu",
+        //   publicationYear,
+        //   "MU:",
+        //   status,
+        //   authorWorks
+        // );
+        if (
+          publicationYear &&
+          authorWorks.publicationYear &&
+          publicationYear != authorWorks.publicationYear
+        ) {
+          continue;
+        }
+        if (
+          status &&
+          authorWorks.status &&
+          ((status && authorWorks.status != "completed") ||
+            (!status && authorWorks.status == "completed"))
+        ) {
+          continue;
+        }
+
         if (authorWorks.title) {
           const mTitle = Object.values(authorWorks.title)[0] as string;
+
           if (mangaTitlesSet.has(mTitle.toLowerCase())) {
             return authorWorks.mangaId;
           }
@@ -44,13 +72,14 @@ const filterMangadexAuthorManga = async (
         // mangaNames.push(mTitle.toLowerCase());
         if (authorWorks.altTitles) {
           for (const altTitle of authorWorks.altTitles) {
+            // console.log(altTitle);
             const currentTitle = Object.values(altTitle)[0] as string;
             // maybe jsut do a match on all titles instead of english
-
+            // console.log("current", currentTitle);
             if (currentTitle.match(/[a-zA-Z0-9]/g)) {
               // console.log("alt title", currentTitle);
               if (mangaTitlesSet.has(currentTitle.toLowerCase())) {
-                console.log("not here yet", currentTitle);
+                // console.log("altTitle");
                 return authorWorks.mangaId;
               }
             }

@@ -11,6 +11,10 @@ export interface mangadexMangaInterface {
   altTitles: title[];
   coverArtImageURL?: string;
   author?: string[];
+  publicationYear?: string;
+  lastChapter?: string;
+  status?: string;
+
   //author and artist later if wanted
 }
 export interface authorWorks {
@@ -288,8 +292,9 @@ export default class mangadexAPI {
         ],
       };
     }
-    const totalAuthors = res?.data?.total;
+
     const resData = res?.data?.data;
+
     // console.l''og(resData);
     // console.log("hello", resData);
 
@@ -300,14 +305,36 @@ export default class mangadexAPI {
         // array of manga objects
         const mangaList = [] as any;
         const relationships = resData[i]?.relationships;
-        // console.log("here", name, relationships);
 
         if (relationships) {
           for (let r = 0; r < relationships.length; r++) {
-            const mangaId = relationships[r].id;
-            const title = relationships[r]?.attributes?.title;
-            const altTitles = relationships[r]?.attributes?.altTitles;
-            mangaList.push({ mangaId, title, altTitles });
+            const mangaId = relationships[r].id ? relationships[r].id : "";
+            const title = relationships[r]?.attributes?.title
+              ? relationships[r]?.attributes?.title
+              : "";
+            const altTitles = relationships[r]?.attributes?.altTitles
+              ? relationships[r]?.attributes?.altTitles
+              : "";
+            const publicationYear = relationships[r]?.attributes?.year
+              ? relationships[r]?.attributes?.year
+              : "";
+            const status = relationships[r]?.attributes?.status
+              ? relationships[r]?.attributes?.status
+              : "";
+
+            const lastChapter = relationships[r]?.attributes?.lastChapter
+              ? relationships[r]?.attributes?.lastChapter
+              : "";
+
+            // console.log(year, failure);
+            mangaList.push({
+              mangaId,
+              title,
+              altTitles,
+              publicationYear,
+              status,
+              lastChapter,
+            });
           }
         }
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API from "@/api/API";
+import MangaSite from "@/layout/MangaSite";
+import MangaChapterList from "./MangaChapterList";
 
 type Mangasee123ChapterListProps = {
   mangaId: string;
@@ -90,7 +92,15 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
     fetchmangasee123Info();
   }, [mangasee123Link]);
 
-  console.log("manga", mangasee123Manga);
-  return <div>Have a good mangasee123</div>;
+  return (
+    <MangaSite>
+      <></>
+      <>
+        {mangasee123Manga.chapters && (
+          <MangaChapterList chaptersList={mangasee123Manga.chapters} />
+        )}
+      </>
+    </MangaSite>
+  );
 };
 export default Mangasee123ChapterList;

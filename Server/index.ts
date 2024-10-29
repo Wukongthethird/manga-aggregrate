@@ -139,8 +139,15 @@ app.post(
       }
 
       const authors = resMangaUpdatesAPI.author as string[];
+      const publicationYear = resMangaUpdatesAPI.publicationYear;
+      const completed = resMangaUpdatesAPI.completed;
 
-      const mangadexMangaId = await findMangadexManga(authors, mangaTitles);
+      const mangadexMangaId = await findMangadexManga(
+        authors,
+        mangaTitles,
+        publicationYear,
+        completed
+      );
 
       return response.status(200).json({ mangadexMangaId });
 

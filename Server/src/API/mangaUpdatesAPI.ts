@@ -38,6 +38,9 @@ export interface mangaUpdatesManga {
   altTitles?: string[];
   author?: string[];
   artist?: string[];
+  publicationYear?: string;
+  latestChapter?: string;
+  completed?: string;
 }
 
 // this should be use to validate I guess
@@ -133,10 +136,17 @@ export default class mangaUpdatesAPI {
       }
 
       const mangaInfo = mangapdatesRes?.data;
+
       const title = mangaInfo.title;
       const link = mangaInfo.url;
-      const imageURL = mangaInfo.image.url;
+      const imageURL = mangaInfo?.image ? mangaInfo.image.url : "";
       const altTitles = [];
+      const publicationYear = mangaInfo?.year ? mangaInfo?.year : "";
+      const latestChapter = mangaInfo?.latest_chapter
+        ? mangaInfo.latest_chapter
+        : "";
+      const completed = mangaInfo?.completed ? mangaInfo.completed : "";
+      console.log(mangaInfo?.completed);
       if (mangaInfo?.associated) {
         for (let t of mangaInfo?.associated) {
           if (t.title.match(/[a-zA-Z0-9]/g)) {
@@ -157,7 +167,18 @@ export default class mangaUpdatesAPI {
         }
       }
 
-      return { mangaId, title, link, imageURL, altTitles, artist, author };
+      return {
+        mangaId,
+        title,
+        link,
+        imageURL,
+        altTitles,
+        artist,
+        author,
+        publicationYear,
+        latestChapter,
+        completed,
+      };
     } catch (error: any) {
       console.log("getmangaupdatesAPI", error);
     }
