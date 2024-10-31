@@ -107,24 +107,31 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, [mangadexMangaId]);
-
+  console.log(mangadexManga);
   return (
-    <MangaSite>
-      <>
-        {mangadexManga.manga.title && (
-          <MangaMetadata
-            coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexMangaId}/${mangadexManga.manga.coverArtImageURL}`}
-            title={Object.values(mangadexManga.manga.title)[0] as string}
-            author={mangadexManga.manga.author}
-          />
-        )}
-      </>
-      <>
-        {mangadexManga.chapters && (
-          <MangaChapterList chaptersList={mangadexManga.chapters} />
-        )}
-      </>
-    </MangaSite>
+    <>
+      <MangaSite>
+        <>
+          {mangadexManga.manga.title && (
+            <MangaMetadata
+              coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexMangaId}/${mangadexManga.manga.coverArtImageURL}`}
+              title={Object.values(mangadexManga.manga.title)[0] as string}
+              author={mangadexManga.manga.author}
+            />
+          )}
+        </>
+        <>
+          {mangadexManga.chapters && (
+            <>
+              <MangaChapterList
+                chaptersList={mangadexManga.chapters}
+                mangaTitle={Object.values(mangadexManga.manga.title)[0]}
+              />
+            </>
+          )}
+        </>
+      </MangaSite>
+    </>
   );
 };
 export default MangadexChapterList;

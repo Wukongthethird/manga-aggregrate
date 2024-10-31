@@ -158,6 +158,19 @@ app.post(
 );
 
 app.post(
+  "/getmangadexchapterpages",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const mangadexChapterId = request.body.mangadexChapterId;
+    if (!mangadexChapterId) {
+      return response.status(200).json();
+    }
+
+    const res = await mangadexAPI.getMangadeChapterPages(mangadexChapterId);
+
+    return response.status(200).json(res);
+  }
+);
+app.post(
   "/findmangaonmangasee123",
   async (request: Request, response: Response, next: NextFunction) => {
     // mangaId on mangaupdates

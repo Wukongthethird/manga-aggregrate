@@ -6,6 +6,7 @@ interface ChapterList {
   //   chapterId: mangadex;
   chapterNumber: string;
   link: string;
+  chapterId?: string;
   //   totalPages: mangadex;
   // date:mangasee123
   //   [key: string]: string;
@@ -13,10 +14,12 @@ interface ChapterList {
 
 type MangaChapterListProps = {
   chaptersList: ChapterList[];
+  mangaTitle: string;
 };
 
 const MangaChapterList: React.FC<MangaChapterListProps> = ({
   chaptersList,
+  mangaTitle,
 }) => {
   return (
     <Box
@@ -33,6 +36,8 @@ const MangaChapterList: React.FC<MangaChapterListProps> = ({
               key={`${item.chapterNumber}+${ind}`}
               chapterNumber={item.chapterNumber}
               link={item.link}
+              mangadexChapterid={item?.chapterId}
+              mangaTitle={mangaTitle}
             />
           );
         })}

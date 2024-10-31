@@ -17,17 +17,20 @@
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.11.1",
+    "jszip": "^3.10.1",
     "next": "14.2.14",
     "nodemon": "^3.1.7",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7",
+    "streamsaver": "^1.2.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/streamsaver": "^2.0.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
     "typescript": "^5"

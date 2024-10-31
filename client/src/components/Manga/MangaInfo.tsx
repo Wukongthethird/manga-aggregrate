@@ -68,7 +68,7 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
   return (
     <>
       <div>thiggg</div>
-      <MangaSiteContainer mangaId={mangaId} />
+      <MangaSiteContainer mangaId={mangaId} link={mangaUpdatesInfo.link} />
     </>
   );
 };

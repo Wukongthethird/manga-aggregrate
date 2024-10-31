@@ -55,5 +55,11 @@ class API {
     const res = await API.request("getmangasee123page", { site });
     return res;
   }
+  static async getmangadexchapterpages(mangadexChapterId: string) {
+    const res = await API.request("getmangadexchapterpages", {
+      mangadexChapterId,
+    });
+    return res;
+  }
 }
 export default API;

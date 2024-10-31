@@ -28,6 +28,7 @@ const filterMangadexAuthorManga = async (
 
       if (Array.isArray(mangadexAuthorResults)) {
         for (const aRes of mangadexAuthorResults) {
+          console.log(aRes);
           if (author.toLowerCase() === aRes?.name.toLowerCase()) {
             listOfAuthorManga.push(...aRes.mangaList);
           }

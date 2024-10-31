@@ -72,6 +72,16 @@ export interface errorsInterface {
   errors: errorMessageInterface[];
 }
 
+export interface mangadexChapterPages {
+  result: string;
+  baseUrl: string;
+  chapter: {
+    hash: string;
+    data: string[];
+    dataSaver: string[];
+  };
+}
+
 export default class mangadexAPI {
   static BASE_URL = process.env.MANGADEX_BASE_URL;
 
@@ -430,35 +440,40 @@ export default class mangadexAPI {
   }
 
   // maybe this should be front end
-  static async downloadMangaChapter(chapterId: string) {
-    const response = { data: [], error: [] };
+  static async getMangadeChapterPages(chapterId: string) {
     const res = await this.request(`at-home/server/${chapterId}`);
-
+    console.log(res);
     // if (res.errors) {
     //   const status = res.errors[0].status;
     //   const detail = res.errors[0].detail;
     //   const cause = chapterId;
     //   response.error.push({ status, detail, cause });
     // }
-
-    const baseURL = res?.data.baseUrl;
-    const images = res?.data.chapter.data;
-    const hash = res?.data.hash;
-
-    try {
-      const res2 = await axios({
-        method: "Get",
-        url: `${baseURL}/data/${hash}/${images[7]}`,
-      });
-    } catch (error: any) {
-      console.log(error.data.errors);
+    if (res.hasOwnProperty("errors")) {
+      return {
+        errors: [
+          { status: `${res.errors[0].status}`, detail: res.errors[0].detail },
+        ],
+      };
     }
+    // const baseURL = res?.data.baseUrl;
+    // const images = res?.data.chapter.data;
+    // const hash = res?.data.hash;
+
+    // try {
+    //   const res2 = await axios({
+    //     method: "Get",
+    //     url: `${baseURL}/data/${hash}/${images[7]}`,
+    //   });
+    // } catch (error: any) {
+    //   console.log(error.data.errors);
+    // }
     //technically i dont need to download thats front ends issue but lets learn now
 
     // if (baseURL && images && hash) {
     //   response.data.push({ baseURL, hash, images });
     // }
-    // return res;
+    return res.data;
   }
   // might be the only api that requires the headers for the bearer. keep individual headers to function or maybe seperate request
 

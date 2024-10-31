@@ -91,7 +91,7 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
     };
     fetchmangasee123Info();
   }, [mangasee123Link]);
-
+  console.log(mangasee123Manga);
   return (
     <MangaSite>
       <></>
