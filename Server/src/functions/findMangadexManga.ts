@@ -22,15 +22,25 @@ const filterMangadexAuthorManga = async (
   try {
     let listOfAuthorManga: mangadexMangaInterface[] = [];
     for (const author of authors) {
-      console.log("author", author);
       const mangadexAuthorResults = await mangadexAPI.searchAuthor(
         author.toLowerCase()
       );
 
       if (Array.isArray(mangadexAuthorResults)) {
         for (const aRes of mangadexAuthorResults) {
-          if (author.toLowerCase() === aRes?.name.toLowerCase()) {
-            // console.log("ares", aRes);
+          if (aRes?.name.toLowerCase() === "jin") {
+            console.log(
+              author,
+              aRes.name,
+              author.toLowerCase(),
+              author.replace(/\s+/g, "-").toLowerCase()
+            );
+          }
+          if (
+            author.toLowerCase() === aRes?.name.toLowerCase() ||
+            author.replace(/\s+/g, "-").toLowerCase() ===
+              aRes?.name.replace(/\s+/g, "-").toLowerCase()
+          ) {
             listOfAuthorManga.push(...aRes.mangaList);
           }
         }

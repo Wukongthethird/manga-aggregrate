@@ -35,16 +35,14 @@ app.use(express.json());
 app.get(
   "/",
   async (request: Request, response: Response, next: NextFunction) => {
-    await mangadexAPI.refreshMangadexTokens();
+    // await mangadexAPI.refreshMangadexTokens();
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await searchMangasee123Manga();
     // const manga = await mangadexAPI.getMangaDetails(
     //   "7873dd0e-131f-4f40-8a92-32601713e1da"
     // );
-    const manga = await mangadexAPI.getMangaChapterList(
-      "7873dd0e-131f-4f40-8a92-32601713e1da"
-    );
+    const manga = await mangadexAPI.searchAuthor("jin");
     // const manga = await searchMangasee123Author("ueno");
     response.status(200).json(manga);
   }

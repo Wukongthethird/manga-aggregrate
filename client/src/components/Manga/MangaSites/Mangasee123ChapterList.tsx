@@ -99,7 +99,7 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
         {mangasee123Manga.manga.title && (
           <MangaMetadata
             coverArtImageURL={mangasee123Manga.manga.coverArtImageURL}
-            title={mangasee123Manga.manga.site}
+            title={mangasee123Manga.manga.title}
             author={mangasee123Manga.manga.author}
           />
         )}
@@ -108,7 +108,7 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
         {mangasee123Manga.chapters && (
           <MangaChapterList
             chaptersList={mangasee123Manga.chapters}
-            mangaTitle={mangasee123Manga.manga.site}
+            mangaTitle={mangasee123Manga.manga.title}
           />
         )}
       </>

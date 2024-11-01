@@ -163,14 +163,14 @@ export default class mangaUpdatesAPI {
               const tempAuthor = a.name.split(/[\(\)]/);
               for (const tAuthor of tempAuthor) {
                 if (tAuthor) {
-                  author.push(tAuthor);
+                  author.push(tAuthor.trim());
                 }
               }
             }
-            author.push(a.name);
+            author.push(a.name.trim());
           }
           if (a.type == "Artist") {
-            artist.push(a.name);
+            artist.push(a.name.trim());
           }
         }
       }

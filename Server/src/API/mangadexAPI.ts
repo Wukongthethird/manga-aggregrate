@@ -288,7 +288,7 @@ export default class mangadexAPI {
     //may need to keep going if author is less than 100
     let newOffset = 0;
     const data = { includes: ["manga"], name, limit: 100, offset: newOffset };
-    const res = await this.request("author", data);
+    let res = await this.request("author", data);
 
     if (res.errors) {
       const status = res.errors[0].status;
@@ -303,15 +303,22 @@ export default class mangadexAPI {
         ],
       };
     }
+
+    const resData = [...res?.data?.data];
+
     let totalAuthors = res?.data?.total;
     newOffset += res?.data?.data.length;
 
-    const resData = res?.data?.data;
+    while (newOffset < totalAuthors) {
+      res = await this.request("author", data);
 
-    // console.l''og(resData);
-    // console.log("hello", resData);
+      if (res?.data?.data) {
+        resData.push(...res?.data?.data);
+        newOffset += res?.data?.data.length;
+      }
+    }
 
-    if (resData) {
+    if (resData.length) {
       for (let i = 0; i < resData.length; i++) {
         const authorId = resData[i]?.id;
         const name = resData[i]?.attributes?.name;
