@@ -286,7 +286,8 @@ export default class mangadexAPI {
   ): Promise<errorsInterface | authorWorks> {
     const response = [] as any;
     //may need to keep going if author is less than 100
-    const data = { includes: ["manga"], name, limit: 100 };
+    let newOffset = 0;
+    const data = { includes: ["manga"], name, limit: 100, offset: newOffset };
     const res = await this.request("author", data);
 
     if (res.errors) {
@@ -302,6 +303,8 @@ export default class mangadexAPI {
         ],
       };
     }
+    let totalAuthors = res?.data?.total;
+    newOffset += res?.data?.data.length;
 
     const resData = res?.data?.data;
 
@@ -442,7 +445,7 @@ export default class mangadexAPI {
   // maybe this should be front end
   static async getMangadeChapterPages(chapterId: string) {
     const res = await this.request(`at-home/server/${chapterId}`);
-    console.log(res);
+
     // if (res.errors) {
     //   const status = res.errors[0].status;
     //   const detail = res.errors[0].detail;

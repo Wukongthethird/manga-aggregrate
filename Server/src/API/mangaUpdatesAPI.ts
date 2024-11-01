@@ -80,7 +80,7 @@ export default class mangaUpdatesAPI {
   ): Promise<errorsInterface | searchMangaUpdatesResultsInterface> {
     const data = { search: title, page: page };
     const mangapdatesRes = await this.request(`v1/series/search`, data, "post");
-    console.log("api", mangapdatesRes.data);
+    // console.log("api", mangapdatesRes.data);
     const response = {
       totalHits: 0,
       perPage: 0,
@@ -146,7 +146,7 @@ export default class mangaUpdatesAPI {
         ? mangaInfo.latest_chapter
         : "";
       const completed = mangaInfo?.completed ? mangaInfo.completed : "";
-      console.log(mangaInfo?.completed);
+
       if (mangaInfo?.associated) {
         for (let t of mangaInfo?.associated) {
           if (t.title.match(/[a-zA-Z0-9]/g)) {
@@ -159,6 +159,14 @@ export default class mangaUpdatesAPI {
       if (mangaInfo?.authors) {
         for (let a of mangaInfo?.authors) {
           if (a.type == "Author") {
+            if (a.name.includes("(") && a.name.includes(")")) {
+              const tempAuthor = a.name.split(/[\(\)]/);
+              for (const tAuthor of tempAuthor) {
+                if (tAuthor) {
+                  author.push(tAuthor);
+                }
+              }
+            }
             author.push(a.name);
           }
           if (a.type == "Artist") {

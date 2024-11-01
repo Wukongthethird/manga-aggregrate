@@ -131,6 +131,7 @@ app.post(
       return response.status(404).json(resMangaUpdatesAPI);
     }
 
+    // console.log(resMangaUpdatesAPI);
     // filter by author is here
     if ("author" in resMangaUpdatesAPI) {
       const mangaTitles = [resMangaUpdatesAPI.title];
@@ -139,6 +140,7 @@ app.post(
       }
 
       const authors = resMangaUpdatesAPI.author as string[];
+
       const publicationYear = resMangaUpdatesAPI.publicationYear;
       const completed = resMangaUpdatesAPI.completed;
 
@@ -218,7 +220,6 @@ app.post(
     //   chapters: mangadexChapter.chapterList,
     //   manga: { ...mangadexPage },
     // };
-    console.log("here", mangasee123Manga);
     if (!mangasee123Manga) {
       return;
     }

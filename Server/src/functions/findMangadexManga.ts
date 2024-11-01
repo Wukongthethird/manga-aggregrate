@@ -13,29 +13,29 @@ const filterMangadexAuthorManga = async (
   //   listOfAuthorManga: any
 ): Promise<void | string> => {
   // let matchedMangadexId;
-
   // typescript this later
   const mangaTitlesSet: Set<string> = new Set();
   for (const t of mangaTitles) {
     mangaTitlesSet.add(t.toLowerCase());
   }
+
   try {
     let listOfAuthorManga: mangadexMangaInterface[] = [];
     for (const author of authors) {
+      console.log("author", author);
       const mangadexAuthorResults = await mangadexAPI.searchAuthor(
         author.toLowerCase()
       );
 
       if (Array.isArray(mangadexAuthorResults)) {
         for (const aRes of mangadexAuthorResults) {
-          console.log(aRes);
           if (author.toLowerCase() === aRes?.name.toLowerCase()) {
+            // console.log("ares", aRes);
             listOfAuthorManga.push(...aRes.mangaList);
           }
         }
       }
     }
-
     if (listOfAuthorManga) {
       for (const authorWorks of listOfAuthorManga) {
         // console.log(

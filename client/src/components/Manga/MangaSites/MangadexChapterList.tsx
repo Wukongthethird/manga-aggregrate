@@ -107,7 +107,11 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, [mangadexMangaId]);
-  console.log(mangadexManga);
+  console.log("manbga", mangadexManga);
+  if (!loading && !error && !mangadexManga.manga.mangaId) {
+    return <>... Not found on Mangadex</>;
+  }
+
   return (
     <>
       <MangaSite>

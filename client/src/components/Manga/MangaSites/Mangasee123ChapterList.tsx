@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import API from "@/api/API";
 import MangaSite from "@/layout/MangaSite";
 import MangaChapterList from "./MangaChapterList";
+import MangaMetadata from "./MangaMetadata";
 
 type Mangasee123ChapterListProps = {
   mangaId: string;
@@ -94,10 +95,21 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
   console.log(mangasee123Manga);
   return (
     <MangaSite>
-      <></>
+      <>
+        {mangasee123Manga.manga.title && (
+          <MangaMetadata
+            coverArtImageURL={mangasee123Manga.manga.coverArtImageURL}
+            title={mangasee123Manga.manga.site}
+            author={mangasee123Manga.manga.author}
+          />
+        )}
+      </>
       <>
         {mangasee123Manga.chapters && (
-          <MangaChapterList chaptersList={mangasee123Manga.chapters} />
+          <MangaChapterList
+            chaptersList={mangasee123Manga.chapters}
+            mangaTitle={mangasee123Manga.manga.site}
+          />
         )}
       </>
     </MangaSite>
