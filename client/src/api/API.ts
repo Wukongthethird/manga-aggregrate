@@ -61,5 +61,19 @@ class API {
     });
     return res;
   }
+
+  static async getmangasee123chapterpages(
+    mangasee123ChapterLink: string,
+    mangaTitle: string,
+    chapterNumber: string
+  ) {
+    const res = await API.request("getmangasee123chapterpages", {
+      mangasee123ChapterLink,
+      mangaTitle,
+      chapterNumber,
+    });
+
+    return res;
+  }
 }
 export default API;

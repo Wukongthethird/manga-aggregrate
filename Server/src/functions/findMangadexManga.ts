@@ -28,14 +28,6 @@ const filterMangadexAuthorManga = async (
 
       if (Array.isArray(mangadexAuthorResults)) {
         for (const aRes of mangadexAuthorResults) {
-          if (aRes?.name.toLowerCase() === "jin") {
-            console.log(
-              author,
-              aRes.name,
-              author.toLowerCase(),
-              author.replace(/\s+/g, "-").toLowerCase()
-            );
-          }
           if (
             author.toLowerCase() === aRes?.name.toLowerCase() ||
             author.replace(/\s+/g, "-").toLowerCase() ===

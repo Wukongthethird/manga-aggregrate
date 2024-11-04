@@ -3,6 +3,8 @@ import express, { Request, Response, NextFunction, request } from "express";
 import corsConfig from "./src/configs/corsConfig";
 import cors from "cors";
 import dotenv from "dotenv";
+import JSZip from "jszip";
+import axios from "axios";
 
 //middleware import
 import errorHandler from "./src/middlewares/errorHandler";
@@ -170,6 +172,7 @@ app.post(
     return response.status(200).json(res);
   }
 );
+
 app.post(
   "/findmangaonmangasee123",
   async (request: Request, response: Response, next: NextFunction) => {
@@ -222,6 +225,57 @@ app.post(
       return;
     }
     return response.status(200).json({ ...mangasee123Manga });
+  }
+);
+
+app.post(
+  "/getmangasee123chapterpages",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const mangasee123ChapterLink = request.body.mangasee123ChapterLink;
+    const mangaTitle = request.body.mangaTitle;
+    const chapterNumber = request.body.chapterNumber;
+
+    if (!mangasee123ChapterLink) {
+      return response.status(200).json();
+    }
+
+    const res = await getMangasee123Chapter(mangasee123ChapterLink);
+    // if (res.pages?.length) {
+    //   const zip = new JSZip();
+    //   const promises = res.pages.map(
+    //     async (url: string | null, index: number) => {
+    //       if (url) {
+    //         const response = await axios.get(url, {
+    //           responseType: "arraybuffer",
+    //         });
+    //         return response;
+    //         // const blob = response.data;
+
+    //         // zip.file(
+    //         //   `${mangaTitle} chapter${chapterNumber}-${index + 1}.png`,
+    //         //   blob
+    //         // );
+    //       }
+    //     }
+    //   );
+
+    //   // await Promise.all(promises);
+
+    //   const data = await Promise.all(promises).then((p) =>
+    //     p.map((x) => x?.data?.data)
+    //   );
+
+    //   // const content = await zip.generateAsync({ type: "nodebuffer" });
+    //   // // console.log(content);
+
+    //   // response.set("Content-Type", "application/zip");
+    //   // response.set(
+    //   //   "Content-Disposition",
+    //   //   `attachment; filename="${mangaTitle}-chapter${chapterNumber}.zip"`
+    //   // );
+    //   return response.status(200).send(data);
+    // }
+    return response.status(200).json({ ...res });
   }
 );
 

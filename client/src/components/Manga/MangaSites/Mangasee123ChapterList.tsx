@@ -3,6 +3,7 @@ import API from "@/api/API";
 import MangaSite from "@/layout/MangaSite";
 import MangaChapterList from "./MangaChapterList";
 import MangaMetadata from "./MangaMetadata";
+import { Img } from "@chakra-ui/react";
 
 type Mangasee123ChapterListProps = {
   mangaId: string;
@@ -104,6 +105,11 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
           />
         )}
       </>
+      {/* <Img
+        hidden
+        src="https://scans.lastation.us/manga/Savage-Hero/0069-001.png"
+      /> */}
+
       <>
         {mangasee123Manga.chapters && (
           <MangaChapterList

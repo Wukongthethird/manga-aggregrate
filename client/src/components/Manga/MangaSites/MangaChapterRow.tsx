@@ -1,7 +1,8 @@
 import React from "react";
 import { Flex, Box, Text, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
-import MangadexSingleChapterDonwload from "./Download/MangadexSingleChapterDonwload";
+import MangadexSingleChapterDownload from "./Download/MangadexSingleChapterDownload";
+import Mangasee123SingleChapterDownload from "./Download/Mangasee123SingleChapterDownload";
 type MangaChapterRowProps = {
   chapterNumber: string;
   link: string;
@@ -42,12 +43,24 @@ const MangaChapterRow: React.FC<MangaChapterRowProps> = ({
           <Box
             cursor={"pointer"}
             onClick={() =>
-              MangadexSingleChapterDonwload(
+              MangadexSingleChapterDownload(
                 mangadexChapterid,
                 chapterNumber,
 
                 mangaTitle
               )
+            }
+          >
+            <Text fontSize={"14pt"} fontWeight={600}>
+              Download
+            </Text>
+          </Box>
+        )}
+        {link && !mangadexChapterid && (
+          <Box
+            cursor={"pointer"}
+            onClick={() =>
+              Mangasee123SingleChapterDownload(link, chapterNumber, mangaTitle)
             }
           >
             <Text fontSize={"14pt"} fontWeight={600}>
