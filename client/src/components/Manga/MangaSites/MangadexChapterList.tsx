@@ -7,6 +7,7 @@ import MangaMetadata from "./MangaMetadata";
 import MangaChapterRow from "./MangaChapterRow";
 import NotFound from "../NotFound";
 import CouldNotFindMangaSite from "../CouldNotFindMangaSite";
+import MangadexMultiChapterDownload from "./Download/MangadexMultiChapterDownload";
 
 interface MangadexChapter {
   chapterId: string;
@@ -130,10 +131,6 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
       }
 
       if (mangadexId?.data?.mangadexMangaId) {
-        console.log(
-          " mangadexId.data.mangadexMangaId",
-          mangadexId.data?.mangadexMangaId
-        );
         const mangadexRes = await API.getmangadexpage(
           mangadexId.data?.mangadexMangaId
         );
@@ -177,12 +174,17 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
           <MangaSite>
             <>
               {mangadexManga.manga.title && (
-                <MangaMetadata
-                  coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexManga.manga.mangaId}/${mangadexManga.manga.coverArtImageURL}`}
-                  title={Object.values(mangadexManga.manga.title)[0] as string}
-                  author={mangadexManga.manga.author}
-                  link={mangadexManga.manga.link}
-                />
+                <>
+                  <MangaMetadata
+                    coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexManga.manga.mangaId}/${mangadexManga.manga.coverArtImageURL}`}
+                    title={
+                      Object.values(mangadexManga.manga.title)[0] as string
+                    }
+                    author={mangadexManga.manga.author}
+                    link={mangadexManga.manga.link}
+                  />
+                  <MangadexMultiChapterDownload />
+                </>
               )}
             </>
             <>

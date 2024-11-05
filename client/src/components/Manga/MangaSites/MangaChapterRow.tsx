@@ -25,6 +25,7 @@ const MangaChapterRow: React.FC<MangaChapterRowProps> = ({
       border={"1px solid"}
       maxW={{ base: "460px", md: "100%" }}
       textAlign={"left"}
+      bgColor={"teal.300"}
     >
       <Box>
         <Text fontSize={"14pt"} fontWeight={600}>

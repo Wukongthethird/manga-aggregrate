@@ -212,7 +212,6 @@ app.post(
           .status(404)
           .json({ errors: [{ message: "Could Not Find" }] });
       }
-
       return response.status(200).json({ mangasee123Link });
       // return these 2 references,
       // probably only want chapter list no need for metadata on Mangasite

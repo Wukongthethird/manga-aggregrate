@@ -31,7 +31,7 @@ interface Mangasee123Manga {
 const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
   mangaId,
 }) => {
-  const [mangasee123Link, setMangasee123Link] = useState<string>("");
+  // const [mangasee123Link, setMangasee123Link] = useState<string>("");
   const [mangasee123Manga, setMangasee123Manga] = useState<Mangasee123Manga>({
     manga: {
       site: "",
@@ -44,33 +44,33 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    const fetchMangasee123Link = async () => {
-      setLoading(true);
+  // useEffect(() => {
+  //   const fetchMangasee123Link = async () => {
+  //     setLoading(true);
 
-      const mangasee123Res = await API.findmangaonmangasee123(mangaId);
+  //     const mangasee123Res = await API.findmangaonmangasee123(mangaId);
 
-      if (!mangasee123Res) {
-        setError("Something Bad Happened");
-      }
+  //     if (!mangasee123Res) {
+  //       setError("Something Bad Happened");
+  //     }
 
-      if (mangasee123Res?.errors) {
-        setError(`${mangasee123Res?.errors[0]?.message}`);
-      }
+  //     if (mangasee123Res?.errors) {
+  //       setError(`${mangasee123Res?.errors[0]?.message}`);
+  //     }
 
-      if (mangasee123Res && mangasee123Res.data) {
-        setMangasee123Link(
-          mangasee123Res.data.mangasee123Link
-            ? mangasee123Res.data.mangasee123Link
-            : ""
-        );
-      }
+  //     if (mangasee123Res && mangasee123Res.data) {
+  //       setMangasee123Link(
+  //         mangasee123Res.data.mangasee123Link
+  //           ? mangasee123Res.data.mangasee123Link
+  //           : ""
+  //       );
+  //     }
 
-      setLoading(false);
-    };
+  //     setLoading(false);
+  //   };
 
-    fetchMangasee123Link();
-  }, []);
+  //   fetchMangasee123Link();
+  // }, []);
 
   // useEffect(() => {
   //   const fetchmangasee123Info = async () => {
@@ -101,7 +101,6 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
 
   useEffect(() => {
     const fetchmangasee123Info = async () => {
-      setLoading(true);
       setLoading(true);
 
       const mangasee123Site = await API.findmangaonmangasee123(mangaId);
@@ -139,10 +138,10 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
       setLoading(false);
     };
     fetchmangasee123Info();
-  }, [mangasee123Link]);
+  }, []);
 
   if (loading) {
-    return <>fetching</>;
+    return <>fetching...</>;
   }
   if (error) {
     return <CouldNotFindMangaSite />;

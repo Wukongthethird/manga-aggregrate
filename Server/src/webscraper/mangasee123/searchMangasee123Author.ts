@@ -65,7 +65,7 @@ const searchMangasee123Author = async (
     }
 
     tries = maxTries;
-    console.log("webscraper", res);
+
     return res;
   } catch (error) {
     tries++;
