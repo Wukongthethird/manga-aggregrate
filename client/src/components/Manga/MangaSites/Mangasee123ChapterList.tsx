@@ -4,6 +4,7 @@ import MangaSite from "@/layout/MangaSite";
 import MangaChapterList from "./MangaChapterList";
 import MangaMetadata from "./MangaMetadata";
 import { Img } from "@chakra-ui/react";
+import CouldNotFindMangaSite from "../CouldNotFindMangaSite";
 
 type Mangasee123ChapterListProps = {
   mangaId: string;
@@ -46,17 +47,25 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
   useEffect(() => {
     const fetchMangasee123Link = async () => {
       setLoading(true);
-      try {
-        const mangasee123Res = await API.findmangaonmangasee123(mangaId);
 
-        if (mangasee123Res && mangasee123Res.data) {
-          setMangasee123Link(
-            mangasee123Res.data.mangasee123Link
-              ? mangasee123Res.data.mangasee123Link
-              : ""
-          );
-        }
-      } catch (error) {}
+      const mangasee123Res = await API.findmangaonmangasee123(mangaId);
+
+      if (!mangasee123Res) {
+        setError("Something Bad Happened");
+      }
+
+      if (mangasee123Res?.errors) {
+        setError(`${mangasee123Res?.errors[0]?.message}`);
+      }
+
+      if (mangasee123Res && mangasee123Res.data) {
+        setMangasee123Link(
+          mangasee123Res.data.mangasee123Link
+            ? mangasee123Res.data.mangasee123Link
+            : ""
+        );
+      }
+
       setLoading(false);
     };
 
@@ -86,14 +95,17 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
             );
           }
         } catch (error) {
-          console.log(error);
+          console.log("errpr", error);
         }
       }
       setLoading(false);
     };
     fetchmangasee123Info();
   }, [mangasee123Link]);
-  console.log(mangasee123Manga);
+
+  if (error) {
+    return <CouldNotFindMangaSite />;
+  }
   return (
     <MangaSite>
       <>
@@ -102,13 +114,10 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
             coverArtImageURL={mangasee123Manga.manga.coverArtImageURL}
             title={mangasee123Manga.manga.title}
             author={mangasee123Manga.manga.author}
+            link={mangasee123Manga.manga.site}
           />
         )}
       </>
-      {/* <Img
-        hidden
-        src="https://scans.lastation.us/manga/Savage-Hero/0069-001.png"
-      /> */}
 
       <>
         {mangasee123Manga.chapters && (

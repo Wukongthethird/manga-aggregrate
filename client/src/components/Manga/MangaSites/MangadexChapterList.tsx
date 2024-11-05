@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import API from "@/api/API";
 import MangaSite from "@/layout/MangaSite";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Skeleton, Stack } from "@chakra-ui/react";
 import MangaChapterList from "./MangaChapterList";
 import MangaMetadata from "./MangaMetadata";
 import MangaChapterRow from "./MangaChapterRow";
+import NotFound from "../NotFound";
+import CouldNotFindMangaSite from "../CouldNotFindMangaSite";
 
 interface MangadexChapter {
   chapterId: string;
@@ -25,6 +27,7 @@ interface MangadexMangaInfo {
   title: {
     [key: string]: string;
   };
+  link: string;
 }
 
 interface MangadexChapterListProps {
@@ -48,25 +51,35 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
       author: [],
       coverArtImageURL: "",
       title: {},
+      link: "",
     },
   });
+  console.log("checl");
 
   useEffect(() => {
     const fetchMangadexId = async () => {
       setLoading(true);
-      try {
-        const mangadexRes = await API.findmangaonmangadex(mangaId);
 
-        if (mangadexRes && mangadexRes.data) {
-          setMangadexMangaId(
-            mangadexRes.data.mangadexMangaId
-              ? mangadexRes.data.mangadexMangaId
-              : ""
-          );
-        }
-      } catch (error) {
-        console.log(error);
+      // try {
+      const mangadexRes = await API.findmangaonmangadex(mangaId);
+      if (!mangadexRes) {
+        setError("Something bad happened");
       }
+
+      if (mangadexRes?.errors) {
+        setError(`${mangadexRes?.errors[0]?.message}`);
+      }
+
+      if (mangadexRes && mangadexRes.data) {
+        setMangadexMangaId(
+          mangadexRes.data.mangadexMangaId
+            ? mangadexRes.data.mangadexMangaId
+            : ""
+        );
+      }
+      // } catch (error) {
+      //   console.log(error);
+      // }
       setLoading(false);
     };
 
@@ -79,50 +92,53 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     const fetchMangadexInfo = async () => {
       setLoading(true);
       if (mangadexMangaId) {
-        try {
-          const mangadexRes = await API.getmangadexpage(mangadexMangaId);
+        // try {
+        const mangadexRes = await API.getmangadexpage(mangadexMangaId);
 
-          if (mangadexRes && mangadexRes?.data) {
-            // console.log("useEffect if", mangadexRes);
-            setMangadexManga(
-              mangadexRes.data
-                ? mangadexRes.data
-                : {
-                    chapters: [],
-                    manga: {
-                      mangaId: "",
-                      altTitles: [],
-                      author: [],
-                      coverArtImageURL: "",
-                      title: {},
-                    },
-                  }
-            );
-          }
-        } catch (error) {
-          console.log(error);
+        if (mangadexRes && mangadexRes?.data) {
+          // console.log("useEffect if", mangadexRes);
+          setMangadexManga(
+            mangadexRes.data
+              ? mangadexRes.data
+              : {
+                  chapters: [],
+                  manga: {
+                    mangaId: "",
+                    altTitles: [],
+                    author: [],
+                    coverArtImageURL: "",
+                    title: {},
+                  },
+                }
+          );
         }
+        // } catch (error) {
+        //   console.log("error", error);
+        // }
       }
       setLoading(false);
     };
     fetchMangadexInfo();
   }, [mangadexMangaId]);
-  console.log("manbga", mangadexManga);
-  if (!loading && !error && !mangadexManga.manga.mangaId) {
-    return <>... Not found on Mangadex</>;
+
+  if (error) {
+    return <CouldNotFindMangaSite />;
   }
 
   return (
     <>
       <MangaSite>
         <>
-          {mangadexManga.manga.title && (
-            <MangaMetadata
-              coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexMangaId}/${mangadexManga.manga.coverArtImageURL}`}
-              title={Object.values(mangadexManga.manga.title)[0] as string}
-              author={mangadexManga.manga.author}
-            />
-          )}
+          <Skeleton isLoaded={!loading}>
+            {mangadexManga.manga.title && (
+              <MangaMetadata
+                coverArtImageURL={`https://uploads.mangadex.org/covers/${mangadexMangaId}/${mangadexManga.manga.coverArtImageURL}`}
+                title={Object.values(mangadexManga.manga.title)[0] as string}
+                author={mangadexManga.manga.author}
+                link={mangadexManga.manga.link}
+              />
+            )}
+          </Skeleton>
         </>
         <>
           {mangadexManga.chapters && (

@@ -71,23 +71,6 @@ app.post(
 );
 
 // w
-app.post(
-  "/getmangadexpage",
-  async (request: Request, response: Response, next: NextFunction) => {
-    const mangaId = request.body.mangaId;
-    if (!mangaId) {
-      return;
-    }
-    const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
-    /// mayne dont need metadata
-    const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
-    const pageAndChapter = {
-      chapters: mangadexChapter.chapterList,
-      manga: { ...mangadexPage },
-    };
-    return response.status(200).json({ ...pageAndChapter });
-  }
-);
 
 app.post(
   "/searchmangaupdates",
@@ -126,12 +109,10 @@ app.post(
     const resMangaUpdatesAPI: errorsInterface | mangaUpdatesManga =
       await mangaUpdatesAPI.getManga(mangaId);
     //array of author may need to process one by one?
-    // console.log(resMangaUpdatesAPI);
     if (resMangaUpdatesAPI.hasOwnProperty("errors")) {
       return response.status(404).json(resMangaUpdatesAPI);
     }
 
-    // console.log(resMangaUpdatesAPI);
     // filter by author is here
     if ("author" in resMangaUpdatesAPI) {
       const mangaTitles = [resMangaUpdatesAPI.title];
@@ -151,11 +132,40 @@ app.post(
         completed
       );
 
+      if (!mangadexMangaId) {
+        return response
+          .status(404)
+          .json({ errors: [{ message: "No Id Given" }] });
+      }
       return response.status(200).json({ mangadexMangaId });
 
       // return these 2 references,
       // probably only want chapter list no need for metadata on Mangasite
     }
+  }
+);
+
+app.post(
+  "/getmangadexpage",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const mangaId = request.body.mangaId;
+    if (!mangaId) {
+      return response.status(404).json({ errors: [{ message: "Not Found" }] });
+    }
+
+    const mangadexPage = await mangadexAPI.getMangaDetails(mangaId);
+
+    const mangadexChapter = await mangadexAPI.getMangaChapterList(mangaId);
+    if (!mangadexPage) {
+      return response
+        .status(404)
+        .json({ errors: [{ message: "Does Not Exist" }] });
+    }
+    const pageAndChapter = {
+      chapters: mangadexChapter.chapterList,
+      manga: { ...mangadexPage },
+    };
+    return response.status(200).json({ ...pageAndChapter });
   }
 );
 
@@ -197,6 +207,12 @@ app.post(
       const authors = resMangaUpdatesAPI.author as string[];
 
       const mangasee123Link = await findMangasee123Manga(authors, mangaTitles);
+      if (!mangasee123Link) {
+        return response
+          .status(404)
+          .json({ errors: [{ message: "Could Not Find" }] });
+      }
+
       return response.status(200).json({ mangasee123Link });
       // return these 2 references,
       // probably only want chapter list no need for metadata on Mangasite
@@ -210,7 +226,7 @@ app.post(
     const site = request.body.site;
 
     if (!site) {
-      return;
+      return response.status(404).json({ errors: [{ message: "No Link" }] });
     }
 
     const mangasee123Manga = await getMangasee123Manga(site);
@@ -222,8 +238,11 @@ app.post(
     //   manga: { ...mangadexPage },
     // };
     if (!mangasee123Manga) {
-      return;
+      return response
+        .status(404)
+        .json({ errors: [{ message: "Could Not Locate" }] });
     }
+
     return response.status(200).json({ ...mangasee123Manga });
   }
 );
@@ -240,42 +259,33 @@ app.post(
     }
 
     const res = await getMangasee123Chapter(mangasee123ChapterLink);
-    // if (res.pages?.length) {
-    //   const zip = new JSZip();
-    //   const promises = res.pages.map(
-    //     async (url: string | null, index: number) => {
-    //       if (url) {
-    //         const response = await axios.get(url, {
-    //           responseType: "arraybuffer",
-    //         });
-    //         return response;
-    //         // const blob = response.data;
+    if (res.pages?.length) {
+      const zip = new JSZip();
+      const promises = res.pages.map(
+        async (url: string | null, index: number) => {
+          if (url) {
+            const response = await axios.get(url, {
+              responseType: "arraybuffer",
+            });
 
-    //         // zip.file(
-    //         //   `${mangaTitle} chapter${chapterNumber}-${index + 1}.png`,
-    //         //   blob
-    //         // );
-    //       }
-    //     }
-    //   );
+            return response;
+          }
+        }
+      );
+      // await Promise.all(promises);
+      const data = await Promise.all(promises).then((p) =>
+        p.map((x, ind) => {
+          if (x?.status == 200 && x?.headers?.["content-type"] == "image/png") {
+            return x?.data;
+          }
+        })
+      );
 
-    //   // await Promise.all(promises);
-
-    //   const data = await Promise.all(promises).then((p) =>
-    //     p.map((x) => x?.data?.data)
-    //   );
-
-    //   // const content = await zip.generateAsync({ type: "nodebuffer" });
-    //   // // console.log(content);
-
-    //   // response.set("Content-Type", "application/zip");
-    //   // response.set(
-    //   //   "Content-Disposition",
-    //   //   `attachment; filename="${mangaTitle}-chapter${chapterNumber}.zip"`
-    //   // );
-    //   return response.status(200).send(data);
-    // }
-    return response.status(200).json({ ...res });
+      if (data.every((x) => x != null || x != undefined)) {
+        return response.status(200).send(data);
+      }
+    }
+    return response.status(200).json();
   }
 );
 

@@ -1,16 +1,18 @@
 import React from "react";
-import { Flex, Box, Stack, Image, Text } from "@chakra-ui/react";
+import { Flex, Box, Stack, Image, Text, Link } from "@chakra-ui/react";
 
 type MangaMetadataProps = {
   coverArtImageURL?: string;
   title?: string;
   author?: string[];
+  link: string;
 };
 
 const MangaMetadata: React.FC<MangaMetadataProps> = ({
   coverArtImageURL,
   title,
   author,
+  link,
 }) => {
   return (
     <Stack>
@@ -21,6 +23,18 @@ const MangaMetadata: React.FC<MangaMetadataProps> = ({
       </Box>
       <Box>
         <Text fontWeight={500}>{author && author[0]}</Text>
+      </Box>
+      <Box>
+        <Link
+          href={link}
+          isExternal
+          style={{ textDecoration: "none" }}
+          _hover={{
+            textColor: "blue.400",
+          }}
+        >
+          <Text>Visit Site</Text>
+        </Link>
       </Box>
     </Stack>
   );

@@ -27,7 +27,6 @@ const MangaChapterList: React.FC<MangaChapterListProps> = ({
       maxW={"100%"}
       //   display={"block"}
       //   overflowY={"auto"}
-      border={"1px solid"}
     >
       <Stack>
         {chaptersList.map((item, ind) => {

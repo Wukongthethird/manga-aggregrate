@@ -14,9 +14,9 @@ const MangaSite: React.FC<MangaSiteProps> = ({ children }) => {
         maxWidth={"1400px"}
         padding={"20px 10px"}
         // height={"100%"}
-        maxH={"640px"}
+        maxH={"700px"}
         // overflowY={"scroll"}
-        bgColor={"red.200"}
+        bgColor={"red.100"}
       >
         {/* manga metadata */}
         <Box
@@ -24,8 +24,6 @@ const MangaSite: React.FC<MangaSiteProps> = ({ children }) => {
           maxWidth={{ base: "0%", md: "35%" }}
           mr={{ base: 0, md: 6 }}
           overflow={{ base: "hidden", md: "none" }}
-          borderColor={"teal"}
-          border={"2px solid"}
           float={"left"}
         >
           {children && children[0 as keyof typeof children]}

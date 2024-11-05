@@ -17,14 +17,15 @@ const Mangasee123SingleChapterDownload = async (
     chapterNumber
   );
 
-  // if (!mangaChapterPages || mangaChapterPages?.data?.errors) {
-  //   return;
-  // }
+  if (!mangaChapterPages || mangaChapterPages?.data?.errors) {
+    return;
+  }
 
   const zip = new JSZip();
 
   if (mangaChapterPages?.data.length) {
     try {
+      // this works but seems hella weird to proxy
       const promises = mangaChapterPages.data.map(
         async (element: any, index: number) => {
           const buffer = new Uint8Array(element.data);
@@ -42,6 +43,7 @@ const Mangasee123SingleChapterDownload = async (
           );
         }
       );
+
       await Promise.all(promises);
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement("a");

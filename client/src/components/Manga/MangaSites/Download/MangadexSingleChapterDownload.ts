@@ -30,7 +30,7 @@ const MangadexSingleChapterDownload = async (
     // const response = await axios.get(URLS[0], {
     //   responseType: "blob",
     // });
-    // console.log("here", response.data);
+
     try {
       await Download(URLS, mangaTitle, chapterNumber);
     } catch (error) {}

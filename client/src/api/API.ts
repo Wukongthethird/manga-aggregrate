@@ -10,7 +10,7 @@ class API {
   static async request(endpoint = "", data = {}, method = "Post") {
     const url = `${this.BASE_URL}/${endpoint}`;
     const params = method === "post" ? data : {};
-    console.log("url", url);
+
     try {
       return await axios({
         url,
@@ -18,8 +18,9 @@ class API {
         data,
         params,
       });
-    } catch (error) {
-      console.log("API ERROR", error);
+    } catch (error: any) {
+      console.log("API", error);
+      return error?.response?.data;
     }
   }
   static async searchMangaUpdates(title: string, pageNumber: string) {

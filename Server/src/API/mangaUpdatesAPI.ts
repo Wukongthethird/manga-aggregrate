@@ -34,6 +34,7 @@ export interface mangaUpdatesManga {
     original: string;
     thumb: string;
   };
+  rating?: string;
   description?: string;
   altTitles?: string[];
   author?: string[];
@@ -145,6 +146,9 @@ export default class mangaUpdatesAPI {
       const latestChapter = mangaInfo?.latest_chapter
         ? mangaInfo.latest_chapter
         : "";
+      const rating = mangaInfo?.bayesian_rating
+        ? `${mangaInfo?.bayesian_rating}`
+        : "";
       const completed = mangaInfo?.completed ? mangaInfo.completed : "";
 
       if (mangaInfo?.associated) {
@@ -183,6 +187,7 @@ export default class mangaUpdatesAPI {
         altTitles,
         artist,
         author,
+        rating,
         publicationYear,
         latestChapter,
         completed,

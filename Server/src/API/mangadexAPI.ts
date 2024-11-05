@@ -200,7 +200,7 @@ export default class mangadexAPI {
     const resData = res?.data?.data;
 
     const title = resData?.attributes?.title;
-
+    const link = `https://mangadex.org/title/${mangaId}`;
     let coverArtImageURL;
     // const altTitles = [];
     let author: string[] = [];
@@ -222,7 +222,7 @@ export default class mangadexAPI {
         }
       }
     }
-    return { mangaId, title, altTitles, author, coverArtImageURL };
+    return { mangaId, link, title, altTitles, author, coverArtImageURL };
   }
 
   static async searchManga(
@@ -400,6 +400,9 @@ export default class mangadexAPI {
         offset: newOffset,
         translatedLanguage: ["en"],
         contentRating: ["safe", "suggestive", "erotica", "pornographic"],
+        order: {
+          chapter: "desc",
+        },
       };
 
       const res = await this.request(`chapter`, body);

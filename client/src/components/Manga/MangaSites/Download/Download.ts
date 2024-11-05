@@ -17,9 +17,6 @@ const Download = async (
     const promises = URLS.map(async (url: string, index: number) => {
       const response = await axios.get(url, {
         responseType: "blob",
-        headers: {
-          "Content-Type": null,
-        },
       });
       const blob = response.data;
       //name of file
