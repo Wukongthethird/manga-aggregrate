@@ -72,37 +72,78 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
     fetchMangasee123Link();
   }, []);
 
+  // useEffect(() => {
+  //   const fetchmangasee123Info = async () => {
+  //     setLoading(true);
+  //     if (mangasee123Link) {
+  //       const mangasee123Res = await API.getmangasee123page(mangasee123Link);
+
+  //       if (mangasee123Res && mangasee123Res?.data) {
+  //         setMangasee123Manga(
+  //           mangasee123Res.data
+  //             ? mangasee123Res.data
+  //             : {
+  //                 manga: {
+  //                   site: "",
+  //                   author: [],
+  //                   coverArtImageURL: "",
+  //                   title: "",
+  //                 },
+  //                 chapters: [],
+  //               }
+  //         );
+  //       }
+  //     }
+  //     setLoading(false);
+  //   };
+  //   fetchmangasee123Info();
+  // }, [mangasee123Link]);
+
   useEffect(() => {
     const fetchmangasee123Info = async () => {
       setLoading(true);
-      if (mangasee123Link) {
-        try {
-          const mangasee123Res = await API.getmangasee123page(mangasee123Link);
+      setLoading(true);
 
-          if (mangasee123Res && mangasee123Res?.data) {
-            setMangasee123Manga(
-              mangasee123Res.data
-                ? mangasee123Res.data
-                : {
-                    manga: {
-                      site: "",
-                      author: [],
-                      coverArtImageURL: "",
-                      title: "",
-                    },
-                    chapters: [],
-                  }
-            );
-          }
-        } catch (error) {
-          console.log("errpr", error);
+      const mangasee123Site = await API.findmangaonmangasee123(mangaId);
+
+      if (!mangasee123Site) {
+        setError("Something Bad Happened");
+      }
+
+      if (mangasee123Site?.errors) {
+        setError(`${mangasee123Site?.errors[0]?.message}`);
+      }
+
+      if (mangasee123Site.data?.mangasee123Link) {
+        const mangasee123Res = await API.getmangasee123page(
+          mangasee123Site.data?.mangasee123Link
+        );
+
+        if (mangasee123Res?.data) {
+          setMangasee123Manga(
+            mangasee123Res.data
+              ? mangasee123Res.data
+              : {
+                  manga: {
+                    site: "",
+                    author: [],
+                    coverArtImageURL: "",
+                    title: "",
+                  },
+                  chapters: [],
+                }
+          );
         }
       }
+
       setLoading(false);
     };
     fetchmangasee123Info();
   }, [mangasee123Link]);
 
+  if (loading) {
+    return <>fetching</>;
+  }
   if (error) {
     return <CouldNotFindMangaSite />;
   }
