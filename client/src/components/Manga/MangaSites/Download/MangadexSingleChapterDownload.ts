@@ -1,7 +1,7 @@
 import API from "@/api/API";
 import Download from "./Download";
 import axios from "axios";
-
+import JSZip from "jszip";
 const MangadexSingleChapterDownload = async (
   mangadexChapterId: string,
   chapterNumber: string,
@@ -31,9 +31,7 @@ const MangadexSingleChapterDownload = async (
     //   responseType: "blob",
     // });
 
-    try {
-      await Download(URLS, mangaTitle, chapterNumber);
-    } catch (error) {}
+    await Download(URLS, mangaTitle, chapterNumber);
   }
 };
 export default MangadexSingleChapterDownload;

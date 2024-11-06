@@ -10,18 +10,29 @@ import {
   Input,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { MangadexChapter } from "../MangadexChapterList";
+import JSZip = require("jszip");
+import API from "@/api/API";
+import axios from "axios";
+import MangaChapterList from "../MangaChapterList";
 
-type MangadexMultiChapterDownloadProps = {};
+type MangadexMultiChapterDownloadProps = {
+  chapterList: MangadexChapter[];
+  title: string;
+};
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const MangadexMultiChapterDownload: React.FC<
   MangadexMultiChapterDownloadProps
-> = () => {
+> = ({ chapterList, title }) => {
   const [formInput, setFormInput] = useState({
     start: "",
     end: "",
   });
-  const [isFocusedStart, setIsFocusedStart] = useState(false);
-  const [isFocusedEnd, setIsFocusedEnd] = useState(false);
+  const [isFocusedStart, setIsFocusedStart] = useState<boolean>(false);
+  const [isFocusedEnd, setIsFocusedEnd] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const re = /^[0-9\b]+$/;
@@ -32,7 +43,75 @@ const MangadexMultiChapterDownload: React.FC<
       }));
     }
   };
+  const onSubmit = async (event: any) => {
+    console.log("hello");
+    event.preventDefault();
+    if (!formInput.start || !formInput.end) {
+      return;
+    }
+    if (+formInput.start < 0 || +formInput.end <= 0) {
+      setError("No Negative Chapters");
+      return;
+    }
+    if (+formInput.start >= +formInput.end) {
+      setError("Start Chapter has to be less than End Chapter");
+      return;
+    }
+    const downloadQueue = [];
+    const zip = new JSZip();
+    for (const chapter of chapterList) {
+      if (
+        parseInt(chapter.chapterNumber) >= parseInt(formInput.start) &&
+        parseInt(chapter.chapterNumber) <= parseInt(formInput.end)
+      ) {
+        downloadQueue.push(chapter);
+      }
+    }
+    setIsDownloading(true);
+    for (const chapter of downloadQueue) {
+      const mangadexRes = await API.getmangadexchapterpages(chapter.chapterId);
+      if (mangadexRes?.data?.chapter?.data) {
+        const baseURL = mangadexRes?.data.baseUrl;
+        const hash = mangadexRes?.data?.chapter?.hash;
 
+        const URLS = mangadexRes?.data?.chapter?.data.map((url: string) => {
+          return `${baseURL}/data/${hash}/${url}`;
+        });
+        const promises = URLS.map(async (url: string, index: number) => {
+          const response = await axios.get(url, {
+            responseType: "blob",
+          });
+
+          const blob = response.data;
+          //name of file
+          zip
+            ?.folder(`${title} chapter ${chapter.chapterNumber}`)
+            ?.file(
+              `${title} chapter ${chapter.chapterNumber}-${index + 1}.${
+                blob.type.split("/")[1]
+              }`,
+              blob
+            );
+        });
+        await Promise.all(promises);
+        await delay(110);
+      }
+    }
+    const content = await zip.generateAsync({ type: "blob" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = `${title} ${formInput.start} - ${formInput.end}`;
+    // Programmatically click the link to trigger the download
+    document.body.appendChild(link);
+    link.click();
+    // Clean up and remove the link
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+    setIsDownloading(false);
+  };
+  if (isDownloading) {
+    return <>Downloading....</>;
+  }
   return (
     <Box
       //   alignItems={"center"}
@@ -58,7 +137,6 @@ const MangadexMultiChapterDownload: React.FC<
             transition="all 0.2s ease-in-out"
             color={isFocusedStart ? "blue.500" : "gray.500"}
             hidden={!isFocusedStart && !!formInput.start}
-            textTransform={"uppercase"}
           >
             Start
           </FormLabel>
@@ -90,7 +168,6 @@ const MangadexMultiChapterDownload: React.FC<
             transition="all 0.2s ease-in-out"
             color={isFocusedEnd ? "blue.500" : "gray.500"}
             hidden={!isFocusedEnd && !!formInput.end}
-            textTransform={"uppercase"}
           >
             End
           </FormLabel>
@@ -112,7 +189,9 @@ const MangadexMultiChapterDownload: React.FC<
           />
         </FormControl>
       </Center>
-      <Button mt={2}>Download</Button>
+      <Button mt={2} onClick={onSubmit}>
+        Download
+      </Button>
       {/* </Center> */}
     </Box>
   );

@@ -1,5 +1,5 @@
 import API from "@/api/API";
-import jsZip from "jszip";
+import JSZip from "jszip";
 import axios from "axios";
 import { url } from "inspector";
 
@@ -11,8 +11,8 @@ const Download = async (
   if (!URLS) {
     return;
   }
-  const zip = new jsZip();
-  const imgs = [] as any;
+  const zip = new JSZip();
+
   try {
     const promises = URLS.map(async (url: string, index: number) => {
       const response = await axios.get(url, {
@@ -27,7 +27,7 @@ const Download = async (
         blob
       );
     });
-    await Promise.all(promises);
+    return await Promise.all(promises);
     const content = await zip.generateAsync({ type: "blob" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(content);

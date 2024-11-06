@@ -23,7 +23,6 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
   state,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  console.log(state, "State", state.formId);
   return (
     <FormControl>
       <FormLabel

@@ -9,7 +9,7 @@ import NotFound from "../NotFound";
 import CouldNotFindMangaSite from "../CouldNotFindMangaSite";
 import MangadexMultiChapterDownload from "./Download/MangadexMultiChapterDownload";
 
-interface MangadexChapter {
+export interface MangadexChapter {
   chapterId: string;
   link: string;
   chapterNumber: string;
@@ -160,7 +160,7 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, []);
-  console.log(mangadexManga);
+  console.log("manga", mangadexManga.chapters);
   if (error) {
     return <CouldNotFindMangaSite />;
   }
@@ -183,13 +183,18 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
                     author={mangadexManga.manga.author}
                     link={mangadexManga.manga.link}
                   />
-                  <MangadexMultiChapterDownload />
                 </>
               )}
             </>
             <>
               {mangadexManga.chapters && (
                 <>
+                  <MangadexMultiChapterDownload
+                    chapterList={mangadexManga.chapters}
+                    title={
+                      Object.values(mangadexManga.manga.title)[0] as string
+                    }
+                  />
                   <MangaChapterList
                     chaptersList={mangadexManga.chapters}
                     mangaTitle={Object.values(mangadexManga.manga.title)[0]}
