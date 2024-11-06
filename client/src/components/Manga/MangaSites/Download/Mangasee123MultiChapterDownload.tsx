@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Mangasee123Chapter } from "../Mangasee123ChapterList";
@@ -126,91 +127,90 @@ const Mangasee123MultiChapterDownload: React.FC<
       setError("Something bad Happened");
     }
   };
-  if (isDownloading) {
-    return <>Downloading....</>;
-  }
+
   return (
-    <Box
-      //   alignItems={"center"}
-      //   alignContent={"center"}
-      //   justifyContent={"center"}
-      textAlign={"center"}
-      alignContent={"center"}
-      alignItems={"center"}
-    >
-      {/* <Center> */}
-
+    <Box textAlign={"center"} alignContent={"center"} alignItems={"center"}>
       <Text mb={2}>Request Chapters For Download</Text>
+      {isDownloading ? (
+        <Spinner
+          color="red.500"
+          css={{ "--spinner-track-color": "colors.blue.200" }}
+          size={"xl"}
+          borderWidth="12px"
+        />
+      ) : (
+        <>
+          <Center>
+            <FormControl>
+              <FormLabel
+                htmlFor={"start"}
+                position="absolute"
+                top={isFocusedStart ? "-2px" : "10px"}
+                left="12px"
+                pb={2}
+                fontSize={!formInput.start ? "md" : "sm"}
+                transition="all 0.2s ease-in-out"
+                color={isFocusedStart ? "blue.500" : "gray.500"}
+                hidden={!isFocusedStart && !!formInput.start}
+              >
+                Start
+              </FormLabel>
 
-      <Center>
-        <FormControl>
-          <FormLabel
-            htmlFor={"start"}
-            position="absolute"
-            top={isFocusedStart ? "-2px" : "10px"}
-            left="12px"
-            pb={2}
-            fontSize={!formInput.start ? "md" : "sm"}
-            transition="all 0.2s ease-in-out"
-            color={isFocusedStart ? "blue.500" : "gray.500"}
-            hidden={!isFocusedStart && !!formInput.start}
-          >
-            Start
-          </FormLabel>
+              <Input
+                id={"start"}
+                name={"start"}
+                onFocus={() => setIsFocusedStart(true)}
+                onBlur={() => setIsFocusedStart(false)}
+                pt="20px"
+                pb="15px"
+                px="20px"
+                h="50px"
+                border="1px solid"
+                borderColor="gray.300"
+                _focus={{ borderColor: "blue.500" }}
+                onChange={onChange}
+                value={formInput.start}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel
+                htmlFor={"end"}
+                position="absolute"
+                top={isFocusedEnd ? "-2px" : "10px"}
+                left="12px"
+                pb={2}
+                fontSize={!formInput.end ? "md" : "sm"}
+                transition="all 0.2s ease-in-out"
+                color={isFocusedEnd ? "blue.500" : "gray.500"}
+                hidden={!isFocusedEnd && !!formInput.end}
+              >
+                End
+              </FormLabel>
 
-          <Input
-            id={"start"}
-            name={"start"}
-            onFocus={() => setIsFocusedStart(true)}
-            onBlur={() => setIsFocusedStart(false)}
-            pt="20px"
-            pb="15px"
-            px="20px"
-            h="50px"
-            border="1px solid"
-            borderColor="gray.300"
-            _focus={{ borderColor: "blue.500" }}
-            onChange={onChange}
-            value={formInput.start}
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel
-            htmlFor={"end"}
-            position="absolute"
-            top={isFocusedEnd ? "-2px" : "10px"}
-            left="12px"
-            pb={2}
-            fontSize={!formInput.end ? "md" : "sm"}
-            transition="all 0.2s ease-in-out"
-            color={isFocusedEnd ? "blue.500" : "gray.500"}
-            hidden={!isFocusedEnd && !!formInput.end}
-          >
-            End
-          </FormLabel>
+              <Input
+                id={"end"}
+                name={"end"}
+                onFocus={() => setIsFocusedEnd(true)}
+                onBlur={() => setIsFocusedEnd(false)}
+                pt="20px"
+                pb="15px"
+                px="20px"
+                h="50px"
+                border="1px solid"
+                borderColor="gray.300"
+                _focus={{ borderColor: "blue.500" }}
+                onChange={onChange}
+                value={formInput.end}
+              />
+            </FormControl>
+          </Center>
 
-          <Input
-            id={"end"}
-            name={"end"}
-            onFocus={() => setIsFocusedEnd(true)}
-            onBlur={() => setIsFocusedEnd(false)}
-            pt="20px"
-            pb="15px"
-            px="20px"
-            h="50px"
-            border="1px solid"
-            borderColor="gray.300"
-            _focus={{ borderColor: "blue.500" }}
-            onChange={onChange}
-            value={formInput.end}
-          />
-        </FormControl>
-      </Center>
-      <Button mt={2} onClick={onSubmit}>
-        Download
-      </Button>
+          <Button mt={2} onClick={onSubmit}>
+            Download
+          </Button>
+        </>
+      )}
       {error && <Text>{error}</Text>}
-      {/* </Center> */}
     </Box>
   );
 };
