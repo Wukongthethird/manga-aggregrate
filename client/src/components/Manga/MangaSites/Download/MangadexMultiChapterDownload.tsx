@@ -142,7 +142,8 @@ const MangadexMultiChapterDownload: React.FC<
         <Spinner
           color="red.500"
           css={{ "--spinner-track-color": "colors.blue.200" }}
-          size={"xl"}
+          w={50}
+          h={50}
           borderWidth="12px"
         />
       ) : (

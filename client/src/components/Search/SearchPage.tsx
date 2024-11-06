@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SearchBar from "@/components/Search/SearchBar";
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, Spinner, Center } from "@chakra-ui/react";
 import SearchResults from "./SearchResults";
 import API from "@/api/API";
 
@@ -93,8 +93,18 @@ const SearchPage: React.FC = () => {
         setSearchTerm={setSearchTerm}
         onSubmit={onSearchSubmit}
       />
-
-      {searchResult.length != 0 && (
+      {loading && (
+        <Center>
+          <Spinner
+            color="red.500"
+            css={{ "--spinner-track-color": "colors.blue.200" }}
+            w={100}
+            h={100}
+            borderWidth="12px"
+          />
+        </Center>
+      )}
+      {searchResult.length != 0 && !loading && (
         <Flex
           // bg="red.500"
           // height={"50px"}

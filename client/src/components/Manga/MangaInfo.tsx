@@ -74,7 +74,8 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
       <Spinner
         color="red.500"
         css={{ "--spinner-track-color": "colors.blue.200" }}
-        size={"xl"}
+        w={100}
+        h={100}
         borderWidth="12px"
       />
     );
