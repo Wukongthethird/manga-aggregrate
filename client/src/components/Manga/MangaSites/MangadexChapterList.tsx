@@ -160,7 +160,7 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
     };
     fetchMangadexInfo();
   }, []);
-  console.log("manga", mangadexManga.chapters);
+
   if (error) {
     return <CouldNotFindMangaSite />;
   }

@@ -8,19 +8,19 @@ import {
   Input,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { MangadexChapter } from "../MangadexChapterList";
+import { Mangasee123Chapter } from "../Mangasee123ChapterList";
 import JSZip = require("jszip");
 import API from "@/api/API";
 import axios from "axios";
 
-type MangadexMultiChapterDownloadProps = {
-  chapterList: MangadexChapter[];
+type Mangasee123MultiChapterDownloadProps = {
+  chapterList: Mangasee123Chapter[];
   title: string;
 };
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const MangadexMultiChapterDownload: React.FC<
-  MangadexMultiChapterDownloadProps
+const Mangasee123MultiChapterDownload: React.FC<
+  Mangasee123MultiChapterDownloadProps
 > = ({ chapterList, title }) => {
   const [formInput, setFormInput] = useState({
     start: "",
@@ -66,10 +66,13 @@ const MangadexMultiChapterDownload: React.FC<
     setIsDownloading(true);
     try {
       for (const chapter of downloadQueue) {
-        const mangadexRes = await API.getmangadexchapterpages(
-          chapter.chapterId
+        const mangaChapterPages = await API.getmangasee123chapterpages(
+          chapter.link,
+          title,
+          chapter.chapterNumber
         );
-        if (!mangadexRes) {
+
+        if (!mangaChapterPages || mangaChapterPages?.data?.errors) {
           setError("download has failed");
           setFormInput({
             start: "",
@@ -78,32 +81,31 @@ const MangadexMultiChapterDownload: React.FC<
           setIsDownloading(false);
           return;
         }
-        if (mangadexRes?.data?.chapter?.data) {
-          const baseURL = mangadexRes?.data.baseUrl;
-          const hash = mangadexRes?.data?.chapter?.hash;
-
-          const URLS = mangadexRes?.data?.chapter?.data.map((url: string) => {
-            return `${baseURL}/data/${hash}/${url}`;
-          });
-          const promises = URLS.map(async (url: string, index: number) => {
+        if (!mangaChapterPages?.data) {
+          setError("something bad happened");
+          return;
+        }
+        const promises = mangaChapterPages.data.map(
+          async (element: any, index: number) => {
+            const buffer = new Uint8Array(element.data);
+            const blob1 = new Blob([buffer], { type: "image/png" });
+            const url = URL.createObjectURL(blob1);
             const response = await axios.get(url, {
               responseType: "blob",
             });
-
-            const blob = response.data;
-            //name of file
+            const blob2 = response.data;
             zip
               ?.folder(`${title} chapter ${chapter.chapterNumber}`)
               ?.file(
-                `${title} chapter ${chapter.chapterNumber}-${index + 1}.${
-                  blob.type.split("/")[1]
+                `${title} chapter${chapter.chapterNumber}-${index + 1}.${
+                  blob2.type.split("/")[1]
                 }`,
-                blob
+                blob2
               );
-          });
-          await Promise.all(promises);
-          await delay(110);
-        }
+          }
+        );
+        await Promise.all(promises);
+        await delay(70);
       }
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement("a");
@@ -212,4 +214,4 @@ const MangadexMultiChapterDownload: React.FC<
     </Box>
   );
 };
-export default MangadexMultiChapterDownload;
+export default Mangasee123MultiChapterDownload;

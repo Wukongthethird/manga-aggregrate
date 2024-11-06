@@ -1,5 +1,5 @@
 import API from "@/api/API";
-import Download from "./download";
+import Download from "./Download";
 import axios from "axios";
 import JSZip from "jszip";
 

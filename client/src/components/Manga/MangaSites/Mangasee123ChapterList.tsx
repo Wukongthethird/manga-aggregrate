@@ -5,6 +5,7 @@ import MangaChapterList from "./MangaChapterList";
 import MangaMetadata from "./MangaMetadata";
 import { Img } from "@chakra-ui/react";
 import CouldNotFindMangaSite from "../CouldNotFindMangaSite";
+import Mangasee123MultiChapterDownload from "./Download/Mangasee123MultiChapterDownload";
 
 type Mangasee123ChapterListProps = {
   mangaId: string;
@@ -161,10 +162,16 @@ const Mangasee123ChapterList: React.FC<Mangasee123ChapterListProps> = ({
 
       <>
         {mangasee123Manga.chapters && (
-          <MangaChapterList
-            chaptersList={mangasee123Manga.chapters}
-            mangaTitle={mangasee123Manga.manga.title}
-          />
+          <>
+            <Mangasee123MultiChapterDownload
+              chapterList={mangasee123Manga.chapters}
+              title={mangasee123Manga.manga.title}
+            />
+            <MangaChapterList
+              chaptersList={mangasee123Manga.chapters}
+              mangaTitle={mangasee123Manga.manga.title}
+            />
+          </>
         )}
       </>
     </MangaSite>
