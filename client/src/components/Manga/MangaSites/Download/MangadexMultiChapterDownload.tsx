@@ -68,46 +68,65 @@ const MangadexMultiChapterDownload: React.FC<
       }
     }
     setIsDownloading(true);
-    for (const chapter of downloadQueue) {
-      const mangadexRes = await API.getmangadexchapterpages(chapter.chapterId);
-      if (mangadexRes?.data?.chapter?.data) {
-        const baseURL = mangadexRes?.data.baseUrl;
-        const hash = mangadexRes?.data?.chapter?.hash;
-
-        const URLS = mangadexRes?.data?.chapter?.data.map((url: string) => {
-          return `${baseURL}/data/${hash}/${url}`;
-        });
-        const promises = URLS.map(async (url: string, index: number) => {
-          const response = await axios.get(url, {
-            responseType: "blob",
+    try {
+      for (const chapter of downloadQueue) {
+        const mangadexRes = await API.getmangadexchapterpages(
+          chapter.chapterId
+        );
+        if (!mangadexRes) {
+          setError("download has failed");
+          setFormInput({
+            start: "",
+            end: "",
           });
+          setIsDownloading(false);
+          return;
+        }
+        if (mangadexRes?.data?.chapter?.data) {
+          const baseURL = mangadexRes?.data.baseUrl;
+          const hash = mangadexRes?.data?.chapter?.hash;
 
-          const blob = response.data;
-          //name of file
-          zip
-            ?.folder(`${title} chapter ${chapter.chapterNumber}`)
-            ?.file(
-              `${title} chapter ${chapter.chapterNumber}-${index + 1}.${
-                blob.type.split("/")[1]
-              }`,
-              blob
-            );
-        });
-        await Promise.all(promises);
-        await delay(110);
+          const URLS = mangadexRes?.data?.chapter?.data.map((url: string) => {
+            return `${baseURL}/data/${hash}/${url}`;
+          });
+          const promises = URLS.map(async (url: string, index: number) => {
+            const response = await axios.get(url, {
+              responseType: "blob",
+            });
+
+            const blob = response.data;
+            //name of file
+            zip
+              ?.folder(`${title} chapter ${chapter.chapterNumber}`)
+              ?.file(
+                `${title} chapter ${chapter.chapterNumber}-${index + 1}.${
+                  blob.type.split("/")[1]
+                }`,
+                blob
+              );
+          });
+          await Promise.all(promises);
+          await delay(110);
+        }
       }
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(content);
+      link.download = `${title} ${formInput.start} - ${formInput.end}`;
+      // Programmatically click the link to trigger the download
+      document.body.appendChild(link);
+      link.click();
+      // Clean up and remove the link
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      setFormInput({
+        start: "",
+        end: "",
+      });
+      setIsDownloading(false);
+    } catch (error) {
+      setError("Something bad Happened");
     }
-    const content = await zip.generateAsync({ type: "blob" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(content);
-    link.download = `${title} ${formInput.start} - ${formInput.end}`;
-    // Programmatically click the link to trigger the download
-    document.body.appendChild(link);
-    link.click();
-    // Clean up and remove the link
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-    setIsDownloading(false);
   };
   if (isDownloading) {
     return <>Downloading....</>;
@@ -192,6 +211,7 @@ const MangadexMultiChapterDownload: React.FC<
       <Button mt={2} onClick={onSubmit}>
         Download
       </Button>
+      {error && <Text>{error}</Text>}
       {/* </Center> */}
     </Box>
   );
