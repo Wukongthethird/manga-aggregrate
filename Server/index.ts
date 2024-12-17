@@ -28,7 +28,6 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-console.log(PORT);
 //Middlewares
 app.use(cors(corsConfig));
 app.use(express.json());
@@ -37,7 +36,7 @@ app.use(express.json());
 app.get(
   "/",
   async (request: Request, response: Response, next: NextFunction) => {
-    // await mangadexAPI.refreshMangadexTokens();
+    await mangadexAPI.refreshMangadexTokens();
 
     // const manga = await mangadexAPI.getMangaFeed(10, "2024-08-29T23:20:50");
     // const manga = await searchMangasee123Manga();
@@ -257,33 +256,49 @@ app.post(
       return response.status(200).json();
     }
 
-    const res = await getMangasee123Chapter(mangasee123ChapterLink);
-    if (res.pages?.length) {
-      const zip = new JSZip();
-      const promises = res.pages.map(
-        async (url: string | null, index: number) => {
-          if (url) {
-            const response = await axios.get(url, {
-              responseType: "arraybuffer",
-            });
+    try {
+      const res = await getMangasee123Chapter(mangasee123ChapterLink);
+      if (res.pages?.length) {
+        const zip = new JSZip();
+        const promises = res.pages.map(
+          async (url: string | null, index: number) => {
+            if (url) {
+              const response = await axios.get(url, {
+                responseType: "arraybuffer",
+              });
 
-            return response;
+              return response;
+            }
           }
+        );
+        // await Promise.all(promises);
+        const data = await Promise.all(promises)
+          .then((p) =>
+            p.map((x, ind) => {
+              if (
+                x?.status == 200 &&
+                x?.headers?.["content-type"] == "image/png"
+              ) {
+                return x?.data;
+              }
+            })
+          )
+          .catch((error) => {
+            console.log("catchfunction", error);
+            return;
+          });
+
+        if (!data) {
+          console.log("!data");
+          return response.status(404);
         }
-      );
-      // await Promise.all(promises);
-      const data = await Promise.all(promises).then((p) =>
-        p.map((x, ind) => {
-          if (x?.status == 200 && x?.headers?.["content-type"] == "image/png") {
-            return x?.data;
-          }
-        })
-      );
 
-      if (data.every((x) => x != null || x != undefined)) {
-        return response.status(200).send(data);
+        if (data.every((x) => x != null || x != undefined)) {
+          return response.status(200).send(data);
+        }
       }
-    }
+    } catch (error) {}
+
     return response.status(200).json();
   }
 );

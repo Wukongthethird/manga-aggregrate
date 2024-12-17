@@ -27,7 +27,7 @@ const Download = async (
         blob
       );
     });
-    return await Promise.all(promises);
+    await Promise.all(promises);
     const content = await zip.generateAsync({ type: "blob" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(content);

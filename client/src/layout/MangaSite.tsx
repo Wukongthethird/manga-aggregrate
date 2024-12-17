@@ -7,40 +7,31 @@ type MangaSiteProps = {
 
 const MangaSite: React.FC<MangaSiteProps> = ({ children }) => {
   return (
-    <Flex justify="center" p="16px 0px">
+    <Box>
       <Flex
-        width="95%"
+        width="100%"
         justify={"center"}
-        maxWidth={"1400px"}
-        padding={"20px 10px"}
-        // height={"100%"}
+        // maxWidth={"1400px"}
         maxH={"700px"}
-        // overflowY={"scroll"}
         bgColor={"red.100"}
       >
         {/* manga metadata */}
         <Box
+          pl={"5%"}
           // direction={"column"}
           maxWidth={{ base: "0%", md: "35%" }}
-          mr={{ base: 0, md: 6 }}
+          // mr={{ base: 0, md: 6 }}
           overflow={{ base: "hidden", md: "none" }}
-          float={"left"}
+          // float={"left"}
         >
           {children && children[0 as keyof typeof children]}
         </Box>
         {/* chapter list */}
-        <Box
-          // direction={"column"}
-          // width={{ base: "100%", md: "100%" }}
-          flexGrow={2}
-          // maxH="100%"
-          // maxH={"50%"}
-          overflow={"scroll"}
-        >
+        <Box pr="5%" flexGrow={2} overflow={"scroll"}>
           <Box>{children && children[1 as keyof typeof children]}</Box>
         </Box>
       </Flex>
-    </Flex>
+    </Box>
   );
 };
 export default MangaSite;

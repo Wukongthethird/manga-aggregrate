@@ -33,13 +33,12 @@ const MangaSiteContainer: React.FC<MangaSiteContainerProps> = ({ mangaId }) => {
           />
         ))}
       </Flex>
-      {/* <Flex p={4} maxH={"100%"} overflowY={"auto"}> */}
+
       {selectedTab === "Mangadex" && <MangadexChapterList mangaId={mangaId} />}
       {selectedTab === "Mangasee123" && (
         <Mangasee123ChapterList mangaId={mangaId} />
       )}
     </Flex>
-    // </Flex>
   );
 };
 export default MangaSiteContainer;

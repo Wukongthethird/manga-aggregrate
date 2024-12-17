@@ -18,3 +18,15 @@ add a page changer on search results traverse different search results do error 
 create a window for chapters,
 typescript stuff on back end and some validation
 manga skeleton fronnnt end
+
+
+
+
+check new manga on updated manga dex list filter to that date saved from db 
+scroll recfentladded mangasee123 and until last date
+ping if there are new updates to see if any title from manga updates exist
+db will need to see last updated
+db will need last chapter updated
+
+go through entire db chec title by title to see if there new title seems bad
+

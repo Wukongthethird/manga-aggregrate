@@ -25,6 +25,7 @@ const TabItem: React.FC<TabItemProps> = ({
       borderWidth={selected ? "0px 1px 2px 0px" : "0px 1px 1px 0px"}
       borderBottomColor={selected ? "red.500" : "gray.200"}
       borderRightColor={"gray.150"}
+      bgColor={selected ? "red.100" : ""}
       onClick={() => setSelectedTab(site)}
     >
       <Text fontSize="12pt">{site}</Text>

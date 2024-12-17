@@ -43,6 +43,7 @@ const Mangasee123MultiChapterDownload: React.FC<
   };
   const onSubmit = async (event: any) => {
     event.preventDefault();
+    setError("");
     if (!formInput.start || !formInput.end) {
       return;
     }
@@ -83,30 +84,69 @@ const Mangasee123MultiChapterDownload: React.FC<
           return;
         }
         if (!mangaChapterPages?.data) {
+          setFormInput({
+            start: "",
+            end: "",
+          });
+          setIsDownloading(false);
           setError("something bad happened");
           return;
         }
-        const promises = mangaChapterPages.data.map(
-          async (element: any, index: number) => {
-            const buffer = new Uint8Array(element.data);
-            const blob1 = new Blob([buffer], { type: "image/png" });
-            const url = URL.createObjectURL(blob1);
-            const response = await axios.get(url, {
-              responseType: "blob",
+        try {
+          const promises = mangaChapterPages.data.map(
+            async (element: any, index: number) => {
+              const buffer = new Uint8Array(element.data);
+              const blob1 = new Blob([buffer], { type: "image/png" });
+              const url = URL.createObjectURL(blob1);
+              const response = await axios.get(url, {
+                responseType: "blob",
+              });
+              if (!response) {
+                return;
+              }
+              const blob2 = response.data;
+
+              zip
+                ?.folder(`${title} chapter ${chapter.chapterNumber}`)
+                ?.file(
+                  `${title} chapter${chapter.chapterNumber}-${index + 1}.${
+                    blob2.type.split("/")[1]
+                  }`,
+                  blob2
+                );
+            }
+          );
+          if (!promises) {
+            setFormInput({
+              start: "",
+              end: "",
             });
-            const blob2 = response.data;
-            zip
-              ?.folder(`${title} chapter ${chapter.chapterNumber}`)
-              ?.file(
-                `${title} chapter${chapter.chapterNumber}-${index + 1}.${
-                  blob2.type.split("/")[1]
-                }`,
-                blob2
-              );
+            setIsDownloading(false);
+            setError("something bad happened");
+            return;
           }
-        );
-        await Promise.all(promises);
-        await delay(70);
+
+          const finished = await Promise.all(promises);
+
+          if (!finished) {
+            setFormInput({
+              start: "",
+              end: "",
+            });
+            setIsDownloading(false);
+            setError("something bad happened");
+            return;
+          }
+          await delay(70);
+        } catch (error) {
+          setFormInput({
+            start: "",
+            end: "",
+          });
+          setIsDownloading(false);
+          setError("something bad happened");
+          return;
+        }
       }
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement("a");
@@ -118,14 +158,16 @@ const Mangasee123MultiChapterDownload: React.FC<
       // Clean up and remove the link
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
-      setFormInput({
-        start: "",
-        end: "",
-      });
-      setIsDownloading(false);
     } catch (error) {
+      console.log("outerblocl", error);
       setError("Something bad Happened");
+      return;
     }
+    setFormInput({
+      start: "",
+      end: "",
+    });
+    setIsDownloading(false);
   };
 
   return (

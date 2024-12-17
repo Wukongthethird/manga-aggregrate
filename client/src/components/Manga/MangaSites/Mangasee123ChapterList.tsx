@@ -11,7 +11,7 @@ type Mangasee123ChapterListProps = {
   mangaId: string;
 };
 
-interface Mangasee123Chapter {
+export interface Mangasee123Chapter {
   link: string;
   chapterNumber: string;
   date: number;

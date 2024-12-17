@@ -131,7 +131,7 @@ export default class mangadexAPI {
       const { access_token, refresh_token } = res.data;
       this.access_token = access_token;
       this.refresh_token = refresh_token;
-      // console.log(this.access_token);
+      console.log("hereher", this.access_token);
     } catch (error: any) {
       console.log(error.data.errors);
     }
@@ -166,6 +166,7 @@ export default class mangadexAPI {
       });
       this.access_token = res?.data?.access_token;
       this.refresh_token = res?.data.refresh_token;
+      console.log("heere", this.access_token);
     } catch (error: any) {
       console.log(error.data.errors);
     }

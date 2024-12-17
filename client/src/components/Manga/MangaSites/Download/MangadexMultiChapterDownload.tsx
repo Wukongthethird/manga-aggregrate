@@ -43,6 +43,7 @@ const MangadexMultiChapterDownload: React.FC<
   };
   const onSubmit = async (event: any) => {
     event.preventDefault();
+    setError("");
     if (!formInput.start || !formInput.end) {
       return;
     }
@@ -86,6 +87,7 @@ const MangadexMultiChapterDownload: React.FC<
           const URLS = mangadexRes?.data?.chapter?.data.map((url: string) => {
             return `${baseURL}/data/${hash}/${url}`;
           });
+
           const promises = URLS.map(async (url: string, index: number) => {
             const response = await axios.get(url, {
               responseType: "blob",
@@ -102,7 +104,18 @@ const MangadexMultiChapterDownload: React.FC<
                 blob
               );
           });
-          await Promise.all(promises);
+
+          const finished = await Promise.all(promises);
+
+          if (!finished) {
+            setFormInput({
+              start: "",
+              end: "",
+            });
+            setIsDownloading(false);
+            setError("something bad happened");
+            return;
+          }
           await delay(70);
         }
       }
@@ -116,14 +129,15 @@ const MangadexMultiChapterDownload: React.FC<
       // Clean up and remove the link
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
-      setFormInput({
-        start: "",
-        end: "",
-      });
-      setIsDownloading(false);
     } catch (error) {
       setError("Something bad Happened");
     }
+
+    setFormInput({
+      start: "",
+      end: "",
+    });
+    setIsDownloading(false);
   };
 
   return (

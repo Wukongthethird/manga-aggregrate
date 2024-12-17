@@ -166,9 +166,9 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
   }
 
   return (
-    <>
+    <Box>
       {loading ? (
-        <>"fetching"..</>
+        <>fetching..</>
       ) : (
         <>
           <MangaSite>
@@ -205,7 +205,7 @@ const MangadexChapterList: React.FC<MangadexChapterListProps> = ({
           </MangaSite>
         </>
       )}
-    </>
+    </Box>
   );
 };
 export default MangadexChapterList;
