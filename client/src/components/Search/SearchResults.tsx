@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Stack, Input, Flex, Box } from "@chakra-ui/react";
+import { Stack, Input, Flex, Box, Text, SimpleGrid } from "@chakra-ui/react";
 import SearchThumbnail from "./SearchThumbnail";
 import { mangaUpdatesManga } from "./SearchPage";
 
@@ -26,30 +26,44 @@ const SearchResult: React.FC<SearchResultProps> = ({
   };
 
   return (
-    <Stack width={"75%"} justify={"center"} mt={"20px"}>
-      <Flex>
+    <Stack width={"85%"} justify={"center"} mt={"20px"}>
+      <Flex alignContent={"center"} textAlign={"center"}>
         <form
           onSubmit={(event) => {
             event.preventDefault();
             onSubmit();
           }}
         >
-          <Input onChange={onChange} value={page} />
-        </form>
-        <Box>{Math.ceil(totalHits / perPage)}</Box>
-      </Flex>
+          <input
+            style={{
+              width: "35px",
+              border: "1px solid",
+              backgroundColor: "none",
+            }}
+            onChange={onChange}
+            value={page}
+            type="number"
 
-      {searchResult.map((item) => {
-        return (
-          <SearchThumbnail
-            key={item.mangaId}
-            title={item.title}
-            imageURL={item.imageURL}
-            mangaId={item.mangaId}
-            link={item.link}
+            // min={1}
+            // max={Math.ceil(totalHits / perPage)}
           />
-        );
-      })}
+        </form>
+        <Text ml="2px">/</Text>
+        <Text ml="2px">{Math.ceil(totalHits / perPage)}</Text>
+      </Flex>
+      <SimpleGrid columns={[1, 2]} gap={10}>
+        {searchResult.map((item) => {
+          return (
+            <SearchThumbnail
+              key={item.mangaId}
+              title={item.title}
+              imageURL={item.imageURL}
+              mangaId={item.mangaId}
+              link={item.link}
+            />
+          );
+        })}
+      </SimpleGrid>
     </Stack>
   );
 };

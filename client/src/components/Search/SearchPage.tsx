@@ -61,8 +61,14 @@ const SearchPage: React.FC = () => {
 
   const onPageSubmit = async () => {
     setLoading(true);
+    let truePage = page;
     try {
-      const res = await API.searchMangaUpdates(lockTerm, page);
+      if (+page < 1) {
+        truePage = "1";
+      } else if (+page > Math.ceil(totalHits / perPage)) {
+        truePage = `${Math.ceil(totalHits / perPage)}`;
+      }
+      const res = await API.searchMangaUpdates(lockTerm, truePage);
 
       if (!res) {
         setError("server is down");
@@ -72,7 +78,7 @@ const SearchPage: React.FC = () => {
         setSearchResult(res.data.results);
         setTotalHits(res.data.totalHits);
         setPerPage(res.data.perPage);
-        setPage(page);
+        setPage(truePage);
       }
     } catch (error) {
       console.log("SEARCHBARAPI ERROR", error);
