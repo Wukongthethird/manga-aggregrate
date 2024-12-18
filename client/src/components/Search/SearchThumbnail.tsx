@@ -30,30 +30,27 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
     <Flex
       border="1px solid"
       bg="white"
-      minH={"200px"}
-      maxH={"200px"}
+      minH={"150px"}
+      maxH={"150px"}
       _hover={{ bgColor: "gray.100" }}
-      // maxWidth={{ base: "100%", md: "50%" }}
+      width={"100%"}
       display={"table"}
     >
       <Stack height={"100%"} direction={"row"} align={"center"}>
-        <Box height={"100%"} width={"50%"}>
-          <Link href={`/manga/${mangaId}`} as={NextLink}>
-            <AspectRatio as="div" ratio={1 / 1}>
-              <Image
-                src={imageURL}
-                alt="N/A"
-                // borderRadius={"full"}
-                //   boxSize={"250px"}
-                // height={"100%"}
-                // width={"100%"}
-                objectFit={"cover"}
-                mr={2}
-              />
-            </AspectRatio>
-          </Link>
+        <Box height={"100%"} width={"25%"}>
+          <AspectRatio as="div" ratio={1 / 1}>
+            <Image
+              src={imageURL}
+              alt="N/A"
+              // borderRadius={"full"}
+              //   boxSize={"250px"}
+              // height={"100%"}
+              // width={"100%"}
+              objectFit={"cover"}
+              mr={2}
+            />
+          </AspectRatio>
         </Box>
-
         <Box maxWidth={"75%"}>
           <Box mt={0} maxH={"15%"}>
             <Text fontSize={"16px"} fontWeight={600} mt={0} overflow={"hidden"}>
@@ -64,15 +61,15 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
             <Text overflow={"hidden"}>{description}</Text>
           </Box> */}
           <Box>
-            <Link href={link} isExternal as={NextLink} zIndex={10}>
+            <Link href={link} isExternal as={NextLink}>
               Get all Data on MangaUpdates
               <ExternalLinkIcon mx="2px" />
             </Link>
           </Box>
           <Box>
-            {/* <Link href={`/manga/${mangaId}`} as={NextLink}>
+            <Link href={`/manga/${mangaId}`} as={NextLink}>
               Go To Page
-            </Link> */}
+            </Link>
           </Box>
         </Box>
       </Stack>
