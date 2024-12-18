@@ -14,6 +14,7 @@ const MangaMetadata: React.FC<MangaMetadataProps> = ({
   author,
   link,
 }) => {
+  console.log("author", author);
   return (
     <Stack>
       <Image maxW={"75%"} maxH={"75%"} src={coverArtImageURL} />
@@ -22,7 +23,13 @@ const MangaMetadata: React.FC<MangaMetadataProps> = ({
         <Text fontWeight={700}>{title}</Text>
       </Box>
       <Box>
-        <Text fontWeight={500}>{author && author[0]}</Text>
+        <Text fontWeight={600}>Author</Text>
+        <Box fontWeight={500}>
+          {author &&
+            author.map((val, ind) => {
+              return <Text key={val + ind}>{`${val}`}</Text>;
+            })}
+        </Box>
       </Box>
       <Box>
         <Link

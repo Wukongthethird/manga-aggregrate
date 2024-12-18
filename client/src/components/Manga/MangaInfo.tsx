@@ -68,6 +68,7 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
 
     fetchMangaUpdatesData();
   }, []);
+  console.log("here", mangaUpdatesInfo.author);
 
   if (loading) {
     return (
@@ -111,7 +112,13 @@ const MangaInfo: React.FC<mangaInfoProps> = ({ mangaId }) => {
               </Icon>
             </Flex>
           </Flex>
-          <Text fontWeight={500}>{mangaUpdatesInfo.author}</Text>
+          <Text fontWeight={700}>{"Author:    "}</Text>
+          <Text fontWeight={500}>
+            {mangaUpdatesInfo.author &&
+              mangaUpdatesInfo.author.map((val, ind) => {
+                return <Text key={val + ind}>{`${val}    `}</Text>;
+              })}
+          </Text>
           <Link
             href={mangaUpdatesInfo.link}
             isExternal
