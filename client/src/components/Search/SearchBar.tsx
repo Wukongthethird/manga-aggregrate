@@ -4,13 +4,19 @@ import API from "@/api/API";
 import { mangaUpdatesMangaInterface } from "./SearchPage";
 
 type SearchBarProps = {
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: () => void;
+  onSubmit: (term: string) => void;
 };
 // props will contain mangalist
-const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm, onSubmit }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSubmit }) => {
+  const [searchBar, setSearchBar] = useState<string>("");
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    setSearchBar(event.target.value);
+  };
+
+  const onSearchBarSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSubmit(searchBar);
   };
 
   return (
@@ -24,7 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm, onSubmit }) => {
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          onSubmit();
+          onSearchBarSubmit(event);
         }}
       >
         <Input

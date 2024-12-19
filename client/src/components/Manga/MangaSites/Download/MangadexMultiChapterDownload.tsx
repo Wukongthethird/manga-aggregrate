@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { MangadexChapter } from "../MangadexChapterList";
-import JSZip = require("jszip");
+import JSZip from "jszip";
 import API from "@/api/API";
 import axios from "axios";
 
@@ -27,6 +27,7 @@ const MangadexMultiChapterDownload: React.FC<
     start: "",
     end: "",
   });
+
   const [isFocusedStart, setIsFocusedStart] = useState<boolean>(false);
   const [isFocusedEnd, setIsFocusedEnd] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
@@ -41,8 +42,10 @@ const MangadexMultiChapterDownload: React.FC<
       }));
     }
   };
-  const onSubmit = async (event: any) => {
-    event.preventDefault();
+  const onSubmit = async (
+    event: React.MouseEventHandler<HTMLButtonElement>
+  ) => {
+    // event.preventDefault();
     setError("");
     if (!formInput.start || !formInput.end) {
       return;
@@ -122,14 +125,17 @@ const MangadexMultiChapterDownload: React.FC<
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(content);
-      link.download = `${title} ${formInput.start} - ${formInput.end}`;
+      link.download = `${title} ${formInput.start} - ${Math.min(
+        +chapterList[0].chapterNumber,
+        +formInput.end
+      )}`;
       // Programmatically click the link to trigger the download
       document.body.appendChild(link);
       link.click();
       // Clean up and remove the link
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
-    } catch (error) {
+    } catch (error: any) {
       setError("Something bad Happened");
     }
 

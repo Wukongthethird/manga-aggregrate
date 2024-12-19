@@ -32,14 +32,12 @@ const SearchPage: React.FC = () => {
   const [page, setPage] = useState<string>("1");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  // const [lockSearch,setLockSearch] = useState<boolean>(false)
   const [lockTerm, setLockTerm] = useState<string>("");
 
-  const onSearchSubmit = async () => {
+  const onSearchSubmit = async (term: string) => {
     setLoading(true);
     try {
-      const res = await API.searchMangaUpdates(searchTerm, "1");
+      const res = await API.searchMangaUpdates(term, "1");
 
       if (!res) {
         setError("server is down");
@@ -50,7 +48,8 @@ const SearchPage: React.FC = () => {
         setSearchResult(res.data.results);
         setTotalHits(res.data.totalHits);
         setPerPage(res.data.perPage);
-        setLockTerm(searchTerm);
+
+        setLockTerm(term);
       }
     } catch (error) {
       console.log("SEARCHBARAPI ERROR", error);
@@ -89,16 +88,7 @@ const SearchPage: React.FC = () => {
 
   return (
     <Box alignContent={"center"}>
-      <SearchBar
-        // setSearchResult={setSearchResult}
-        // setLoading={setLoading}
-        // setError={setError}
-        // setTotalHits={setTotalHits}
-        // setPerPage={setPerPage}
-
-        setSearchTerm={setSearchTerm}
-        onSubmit={onSearchSubmit}
-      />
+      <SearchBar onSubmit={onSearchSubmit} />
       {loading && (
         <Center>
           <Spinner
