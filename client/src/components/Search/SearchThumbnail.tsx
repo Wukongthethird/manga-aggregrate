@@ -39,16 +39,7 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
       <Stack height={"100%"} direction={"row"} align={"center"}>
         <Box height={"100%"} width={"25%"}>
           <AspectRatio as="div" ratio={1 / 1}>
-            <Image
-              src={imageURL}
-              alt="N/A"
-              // borderRadius={"full"}
-              //   boxSize={"250px"}
-              // height={"100%"}
-              // width={"100%"}
-              objectFit={"cover"}
-              mr={2}
-            />
+            <Image src={imageURL} alt="N/A" objectFit={"cover"} mr={2} />
           </AspectRatio>
         </Box>
         <Box maxWidth={"75%"}>
@@ -57,9 +48,7 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
               {title}
             </Text>
           </Box>
-          {/* <Box maxH={"50%"}>
-            <Text overflow={"hidden"}>{description}</Text>
-          </Box> */}
+
           <Box>
             <Link href={link} isExternal as={NextLink}>
               Get all Data on MangaUpdates

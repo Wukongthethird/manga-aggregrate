@@ -1,7 +1,5 @@
 import { Input, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
-import API from "@/api/API";
-import { mangaUpdatesMangaInterface } from "./SearchPage";
 
 type SearchBarProps = {
   onSubmit: (term: string) => void;

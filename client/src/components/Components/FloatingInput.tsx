@@ -1,12 +1,4 @@
-import {
-  Box,
-  Text,
-  Center,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 type FloatingInputProps = {
