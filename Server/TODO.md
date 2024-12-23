@@ -21,3 +21,5 @@ db will need to see last updated
 db will need last chapter updated
 
 go through entire db chec title by title to see if there new title seems bad
+
+Click left will submit first to up or down. will do setPage on render probably should work

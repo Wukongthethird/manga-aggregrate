@@ -457,12 +457,6 @@ export default class mangadexAPI {
   static async getMangadeChapterPages(chapterId: string) {
     const res = await this.request(`at-home/server/${chapterId}`);
 
-    // if (res.errors) {
-    //   const status = res.errors[0].status;
-    //   const detail = res.errors[0].detail;
-    //   const cause = chapterId;
-    //   response.error.push({ status, detail, cause });
-    // }
     if (res.hasOwnProperty("errors")) {
       return {
         errors: [
@@ -470,23 +464,7 @@ export default class mangadexAPI {
         ],
       };
     }
-    // const baseURL = res?.data.baseUrl;
-    // const images = res?.data.chapter.data;
-    // const hash = res?.data.hash;
 
-    // try {
-    //   const res2 = await axios({
-    //     method: "Get",
-    //     url: `${baseURL}/data/${hash}/${images[7]}`,
-    //   });
-    // } catch (error: any) {
-    //   console.log(error.data.errors);
-    // }
-    //technically i dont need to download thats front ends issue but lets learn now
-
-    // if (baseURL && images && hash) {
-    //   response.data.push({ baseURL, hash, images });
-    // }
     return res.data;
   }
   // might be the only api that requires the headers for the bearer. keep individual headers to function or maybe seperate request
@@ -497,7 +475,6 @@ export default class mangadexAPI {
     limit: number,
     dateTime: string
   ): Promise<getMangaFeedInterface> {
-    // res?.data?.data gives chapter id then with data -> relationships for group and manganame
     const response = {
       data: [] as newChapterInterface[],
       errors: [] as errorMessageInterface[],
@@ -516,8 +493,7 @@ export default class mangadexAPI {
         publishAt: "desc",
       },
       publishAtSince: dateTime,
-      // updatedAtSince: dateTime,
-      // includes: ["cover_art", "author"],
+
       limit: limit,
     };
     const res = await this.request(
@@ -546,15 +522,6 @@ export default class mangadexAPI {
         const chapterId = chapter.id;
         const chapterNumber = chapter?.attributes?.chapter;
         const link = `https://mangadex.org/chapter/${chapterId}`;
-
-        // const mangaId = manga?.relationships
-        //   .filter(
-        //     (relationship: { id: string; type?: string }) =>
-        //       relationship.type === "manga"
-        //   )
-        //   .map(
-        //     (relationship: { id: string; type?: string }) => relationship.id
-        //   );
         let mangaId;
 
         for (let j = 0; j < chapter?.relationships.length; j++) {

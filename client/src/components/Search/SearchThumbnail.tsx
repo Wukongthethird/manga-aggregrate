@@ -1,12 +1,4 @@
-import {
-  Flex,
-  Stack,
-  Image,
-  Box,
-  Text,
-  AspectRatio,
-  Link,
-} from "@chakra-ui/react";
+import { Flex, Stack, Image, Box, Text, Link } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
 
@@ -38,9 +30,14 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
     >
       <Stack height={"100%"} direction={"row"} align={"center"}>
         <Box height={"100%"} width={"25%"}>
-          <AspectRatio as="div" ratio={1 / 1}>
-            <Image src={imageURL} alt="N/A" objectFit={"cover"} mr={2} />
-          </AspectRatio>
+          <Image
+            minH={"150px"}
+            maxH={"150px"}
+            src={imageURL}
+            alt="N/A"
+            objectFit={"cover"}
+            mr={2}
+          />
         </Box>
         <Box maxWidth={"75%"}>
           <Box mt={0} maxH={"15%"}>

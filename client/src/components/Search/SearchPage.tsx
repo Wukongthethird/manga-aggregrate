@@ -3,6 +3,7 @@ import SearchBar from "@/components/Search/SearchBar";
 import { Flex, Box, Spinner, Center } from "@chakra-ui/react";
 import SearchResults from "./SearchResults";
 import API from "@/api/API";
+import SearchPagination from "./SearchPagination";
 
 export interface searchMangaUpdatesInterface {
   totalHits: number;
@@ -34,6 +35,7 @@ const SearchPage: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [lockTerm, setLockTerm] = useState<string>("");
 
+  // need to add react typescrip tstuff
   const onSearchSubmit = async (term: string) => {
     setLoading(true);
     try {
@@ -58,13 +60,14 @@ const SearchPage: React.FC = () => {
     setLoading(false);
   };
 
-  const onPageSubmit = async () => {
+  const onPageSubmit = async (goToPageNumber: string) => {
+    console.log("onPageSubmit");
     setLoading(true);
-    let truePage = page;
+    let truePage = goToPageNumber;
     try {
-      if (+page < 1) {
+      if (+goToPageNumber < 1) {
         truePage = "1";
-      } else if (+page > Math.ceil(totalHits / perPage)) {
+      } else if (+goToPageNumber > Math.ceil(totalHits / perPage)) {
         truePage = `${Math.ceil(totalHits / perPage)}`;
       }
       const res = await API.searchMangaUpdates(lockTerm, truePage);
@@ -85,6 +88,7 @@ const SearchPage: React.FC = () => {
     }
     setLoading(false);
   };
+  console.log("pageFunction", page);
 
   return (
     <Box alignContent={"center"}>
@@ -100,24 +104,18 @@ const SearchPage: React.FC = () => {
           />
         </Center>
       )}
+
       {searchResult.length != 0 && !loading && (
-        <Flex
-          // bg="red.500"
-          // height={"50px"}
-          justifyContent={"center"}
-          padding="6 12"
-          justify={{ md: "space-between" }}
-          align="center"
-        >
-          <SearchResults
+        <Box alignContent={"center"}>
+          <SearchPagination
             setPage={setPage}
             onSubmit={onPageSubmit}
-            searchResult={searchResult}
             perPage={perPage}
             totalHits={totalHits}
             page={page}
           />
-        </Flex>
+          <SearchResults searchResult={searchResult} />
+        </Box>
       )}
     </Box>
   );
