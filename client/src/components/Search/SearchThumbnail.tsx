@@ -33,6 +33,8 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
           <Image
             minH={"150px"}
             maxH={"150px"}
+            minW={"150px"}
+            maxW={"150px"}
             src={imageURL}
             alt="N/A"
             objectFit={"cover"}
