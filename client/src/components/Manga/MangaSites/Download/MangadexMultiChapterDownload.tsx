@@ -42,10 +42,8 @@ const MangadexMultiChapterDownload: React.FC<
       }));
     }
   };
-  const onSubmit = async (
-    event: React.MouseEventHandler<HTMLButtonElement>
-  ) => {
-    // event.preventDefault();
+  const onSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setError("");
     if (!formInput.start || !formInput.end) {
       return;

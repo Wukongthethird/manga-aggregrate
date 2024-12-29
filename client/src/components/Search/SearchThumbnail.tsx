@@ -24,6 +24,7 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
       bg="white"
       minH={"150px"}
       maxH={"150px"}
+      minW={"550px"}
       _hover={{ bgColor: "gray.100" }}
       width={"100%"}
       display={"table"}

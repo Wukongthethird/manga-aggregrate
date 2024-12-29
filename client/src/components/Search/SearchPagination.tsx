@@ -1,6 +1,8 @@
 import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { BsThreeDots } from "react-icons/bs";
 
 type SearchPaginationProps = {
   totalHits: number;
@@ -14,19 +16,27 @@ type SearchPaginationProps = {
 // create a pill for each infor I guess
 // pagenumber is what
 type PagePillProps = {
+  page: number;
   pageNumberDisplay: number;
   setPage: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (goToPageNumber: string) => void;
 };
 
 type PagesIndexProps = {
+  page: number;
   start: number;
   end: number;
   setPage: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (goToPageNumber: string) => void;
 };
 
+type ElipsisOrInputProps = {
+  setPage: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: (goToPageNumber: string) => void;
+};
+
 const PagePill: React.FC<PagePillProps> = ({
+  page,
   pageNumberDisplay,
   setPage,
   onSubmit,
@@ -36,15 +46,22 @@ const PagePill: React.FC<PagePillProps> = ({
     onSubmit(pageNumberDisplay.toString());
     setPage(pageNumberDisplay.toString());
   };
+  const ISSELECTED = pageNumberDisplay == page;
 
   return (
-    <Button variant={"ghost"} onClick={onClick}>
+    <Button
+      variant={ISSELECTED ? "solid" : "ghost"}
+      bgColor={ISSELECTED ? "red.400" : ""}
+      onClick={ISSELECTED ? () => {} : onClick}
+      _hover={{ bgColor: "red.400" }}
+    >
       {pageNumberDisplay}
     </Button>
   );
 };
 
 const PagesIndex: React.FC<PagesIndexProps> = ({
+  page,
   start,
   end,
   setPage,
@@ -60,6 +77,7 @@ const PagesIndex: React.FC<PagesIndexProps> = ({
         {values.map((val, idx) => {
           return (
             <PagePill
+              page={page}
               key={`${val}+/+${idx}`}
               pageNumberDisplay={val}
               setPage={setPage}
@@ -72,8 +90,44 @@ const PagesIndex: React.FC<PagesIndexProps> = ({
   );
 };
 
-const ElipsisOrInput: React.FC = () => {
-  return <>...</>;
+const ElipsisOrInput: React.FC<ElipsisOrInputProps> = ({
+  setPage,
+  onSubmit,
+}) => {
+  const [showElipsis, setShowElipsis] = useState<boolean>(true);
+  const [numberInput, setNumberInput] = useState<string>("");
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNumberInput(event.target.value);
+  };
+
+  const handlePageSubmit = () => {};
+
+  const onFocus = () => {
+    setShowElipsis(false);
+  };
+  const onBlur = () => {
+    setShowElipsis(true);
+  };
+
+  const goToPageSubmit = () => {};
+  console.log(showElipsis);
+  if (showElipsis) {
+    return (
+      <Button
+        onFocus={(event) => {
+          event.preventDefault();
+          onFocus();
+        }}
+        onBlur={onBlur}
+      >
+        <Icon fontSize={22}>
+          <BsThreeDots />
+        </Icon>
+      </Button>
+    );
+  }
+  if (!showElipsis) {
+  }
 };
 
 const SearchPagination: React.FC<SearchPaginationProps> = ({
@@ -86,7 +140,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
   const ENDPAGE = Math.ceil(totalHits / perPage);
   const SIBLINGPAGENUMBER = 2;
   // if you are postion further up ahead
-  const SHOWLEFTELIPSIS = +page - SIBLINGPAGENUMBER > 1 + SIBLINGPAGENUMBER;
+  const SHOWLEFTELIPSIS = +page - SIBLINGPAGENUMBER > SIBLINGPAGENUMBER;
   // if you are postioned closer to the beggining
   const SHOWRIGHTELIPSIS =
     +page + SIBLINGPAGENUMBER < ENDPAGE - SIBLINGPAGENUMBER;
@@ -110,11 +164,21 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
   } else if (!SHOWLEFTELIPSIS && SHOWRIGHTELIPSIS) {
     return (
       <Flex>
-        {/* {this is wrong need to fix later} */}
+        <Button
+          onClick={(event) => {
+            event.preventDefault();
+            onClickLeft(event);
+          }}
+        >
+          <Icon fontSize={22}>
+            <SlArrowLeft />
+          </Icon>
+        </Button>
         <Box>
           <PagesIndex
+            page={+page}
             start={1}
-            end={2 * SIBLINGPAGENUMBER}
+            end={2 * SIBLINGPAGENUMBER + 1}
             setPage={setPage}
             onSubmit={onSubmit}
           />
@@ -123,27 +187,59 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
           <ElipsisOrInput />
         </Box>
         <PagePill
+          page={+page}
           pageNumberDisplay={ENDPAGE}
           setPage={setPage}
           onSubmit={onSubmit}
         />
+        <Button
+          onClick={(event) => {
+            event.preventDefault();
+            onClickRight(event);
+          }}
+        >
+          <Icon fontSize={22}>
+            <SlArrowRight />
+          </Icon>
+        </Button>
       </Flex>
     );
   } else if (SHOWLEFTELIPSIS && !SHOWRIGHTELIPSIS) {
     return (
       <Flex>
+        <Button
+          onClick={(event) => {
+            event.preventDefault();
+            onClickLeft(event);
+          }}
+        >
+          <Icon fontSize={22}>
+            <SlArrowLeft />
+          </Icon>
+        </Button>
         <Box>{1}</Box>
         <Box>
           <ElipsisOrInput />
         </Box>
         <Box>
           <PagesIndex
+            page={+page}
             start={+page - 2 * SIBLINGPAGENUMBER}
             end={ENDPAGE}
             setPage={setPage}
             onSubmit={onSubmit}
           />
         </Box>
+        <Button
+          onClick={(event) => {
+            event.preventDefault();
+            onClickRight(event);
+          }}
+        >
+          <Icon fontSize={22}>
+            <SlArrowRight />
+          </Icon>
+        </Button>
       </Flex>
     );
   } else {
@@ -159,28 +255,35 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
             <SlArrowLeft />
           </Icon>
         </Button>
-        {/* <form
-        onSubmit={(event) => {
-          event.preventDefault();
-
-          onSubmit();
-        }}
-      >
-        <input
-          style={{
-            width: "35px",
-            border: "1px solid",
-            backgroundColor: "none",
-          }}
-          onChange={onChange}
-          value={page}
-          type="number"
+        <PagePill
+          page={+page}
+          pageNumberDisplay={1}
+          setPage={setPage}
+          onSubmit={onSubmit}
         />
-      </form> */}
-        {/* <Text ml="2px">/</Text> */}
-        <Text _hover={{ bg: "gray.100" }} ml="2px">
-          {ENDPAGE}
-        </Text>
+
+        <Box>
+          <ElipsisOrInput />
+        </Box>
+        <Box>
+          <PagesIndex
+            page={+page}
+            start={+page - SIBLINGPAGENUMBER}
+            end={+page + SIBLINGPAGENUMBER}
+            setPage={setPage}
+            onSubmit={onSubmit}
+          />
+        </Box>
+        <Box>
+          <ElipsisOrInput />
+        </Box>
+        <PagePill
+          page={+page}
+          pageNumberDisplay={ENDPAGE}
+          setPage={setPage}
+          onSubmit={onSubmit}
+        />
+
         <Button
           onClick={(event) => {
             event.preventDefault();

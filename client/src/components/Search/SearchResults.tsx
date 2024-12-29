@@ -20,7 +20,7 @@ const SearchResult: React.FC<SearchResultProps> = ({ searchResult }) => {
       align="center"
     >
       <Stack width={"85%"} justify={"center"} mt={"20px"}>
-        <SimpleGrid columns={[1, null, 2]} gap={10}>
+        <SimpleGrid columns={[1, 1, 1, 2]} gap={10}>
           {searchResult.map((item) => {
             return (
               <SearchThumbnail

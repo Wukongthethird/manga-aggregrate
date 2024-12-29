@@ -41,7 +41,7 @@ const Mangasee123MultiChapterDownload: React.FC<
       }));
     }
   };
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setError("");
     if (!formInput.start || !formInput.end) {
