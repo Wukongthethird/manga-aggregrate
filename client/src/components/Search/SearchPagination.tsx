@@ -100,17 +100,20 @@ const ElipsisOrInput: React.FC<ElipsisOrInputProps> = ({
     setNumberInput(event.target.value);
   };
 
-  const handlePageSubmit = () => {};
-
   const onFocus = () => {
     setShowElipsis(false);
   };
   const onBlur = () => {
     setShowElipsis(true);
+    setNumberInput("");
   };
 
-  const goToPageSubmit = () => {};
-  console.log(showElipsis);
+  const goToPageSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPage(numberInput);
+    onSubmit(numberInput);
+  };
+
   if (showElipsis) {
     return (
       <Button
@@ -127,6 +130,25 @@ const ElipsisOrInput: React.FC<ElipsisOrInputProps> = ({
     );
   }
   if (!showElipsis) {
+    return (
+      <Box>
+        <form onSubmit={goToPageSubmit}>
+          {/* change this  styling*/}
+          <input
+            style={{
+              width: "35px",
+              border: "1px solid",
+              backgroundColor: "none",
+            }}
+            autoFocus
+            onChange={handleInputChange}
+            value={numberInput}
+            type="number"
+            onBlur={onBlur}
+          />
+        </form>
+      </Box>
+    );
   }
 };
 
@@ -184,7 +206,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
           />
         </Box>
         <Box>
-          <ElipsisOrInput />
+          <ElipsisOrInput setPage={setPage} onSubmit={onSubmit} />
         </Box>
         <PagePill
           page={+page}
@@ -219,7 +241,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
         </Button>
         <Box>{1}</Box>
         <Box>
-          <ElipsisOrInput />
+          <ElipsisOrInput setPage={setPage} onSubmit={onSubmit} />
         </Box>
         <Box>
           <PagesIndex
@@ -263,7 +285,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
         />
 
         <Box>
-          <ElipsisOrInput />
+          <ElipsisOrInput setPage={setPage} onSubmit={onSubmit} />
         </Box>
         <Box>
           <PagesIndex
@@ -275,7 +297,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
           />
         </Box>
         <Box>
-          <ElipsisOrInput />
+          <ElipsisOrInput setPage={setPage} onSubmit={onSubmit} />
         </Box>
         <PagePill
           page={+page}
