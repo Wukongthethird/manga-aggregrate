@@ -43,7 +43,7 @@ const SearchThumbnail: React.FC<SearchThumbnail> = ({
         </Box>
         <Box maxWidth={"75%"}>
           <Box mt={0} maxH={"15%"}>
-            <Text fontSize={"16px"} fontWeight={600} mt={0} overflow={"hidden"}>
+            <Text fontSize={"16px"} fontWeight={600} mt={0}>
               {title}
             </Text>
           </Box>

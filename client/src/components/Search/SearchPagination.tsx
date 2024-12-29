@@ -31,7 +31,17 @@ const PagePill: React.FC<PagePillProps> = ({
   setPage,
   onSubmit,
 }) => {
-  return <Button variant={"ghost"}>{pageNumberDisplay}</Button>;
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    onSubmit(pageNumberDisplay.toString());
+    setPage(pageNumberDisplay.toString());
+  };
+
+  return (
+    <Button variant={"ghost"} onClick={onClick}>
+      {pageNumberDisplay}
+    </Button>
+  );
 };
 
 const PagesIndex: React.FC<PagesIndexProps> = ({
