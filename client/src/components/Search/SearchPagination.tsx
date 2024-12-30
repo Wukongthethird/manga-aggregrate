@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Text, ScaleFade } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -11,6 +11,8 @@ type SearchPaginationProps = {
   setPage: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (goToPageNumber: string) => void;
 };
+// bgcolor = EDF2f7 white
+// gray = 1a202C
 
 // create somethign to render out the image it self
 // create a pill for each infor I guess
@@ -116,37 +118,49 @@ const ElipsisOrInput: React.FC<ElipsisOrInputProps> = ({
 
   if (showElipsis) {
     return (
-      <Button
-        onFocus={(event) => {
-          event.preventDefault();
-          onFocus();
-        }}
-        onBlur={onBlur}
-      >
-        <Icon fontSize={22}>
-          <BsThreeDots />
-        </Icon>
-      </Button>
+      <Flex direction="column">
+        <Box flex={1}>
+          <Button
+            _hover={{ bgColor: "red.400" }}
+            bgColor={"gray.200"}
+            onFocus={(event) => {
+              event.preventDefault();
+              onFocus();
+            }}
+            onBlur={onBlur}
+          >
+            <Icon fontSize={22} bottom={"0"}>
+              <BsThreeDots />
+            </Icon>
+          </Button>
+        </Box>
+      </Flex>
     );
   }
   if (!showElipsis) {
     return (
-      <Box>
-        <form onSubmit={goToPageSubmit}>
-          {/* change this  styling*/}
-          <input
-            style={{
-              width: "35px",
-              border: "1px solid",
-              backgroundColor: "none",
-            }}
-            autoFocus
-            onChange={handleInputChange}
-            value={numberInput}
-            type="number"
-            onBlur={onBlur}
-          />
-        </form>
+      <Box bgColor={""} float={"left"} display={"inline-block"} bottom={"20px"}>
+        <ScaleFade initialScale={0.9} in={!showElipsis}>
+          <form onSubmit={goToPageSubmit} style={{ display: "inline-block" }}>
+            {/* change this  styling*/}
+            <input
+              style={{
+                width: "51.2px",
+                height: "40px",
+                border: "1px solid",
+                borderRadius: "3px",
+                backgroundColor: "#EDF2F7",
+                display: "inline-block",
+                font: "Nunito Sans",
+              }}
+              autoFocus
+              onChange={handleInputChange}
+              value={numberInput}
+              type="number"
+              onBlur={onBlur}
+            />
+          </form>
+        </ScaleFade>
       </Box>
     );
   }
@@ -178,6 +192,38 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
     onSubmit((parseInt(page) - 1).toString());
     setPage((parseInt(page) - 1).toString());
   };
+  const leftArrowButton = (
+    <Box>
+      <Button
+        _hover={{ bgColor: "red.400" }}
+        bgColor={"gray.200"}
+        onClick={(event) => {
+          event.preventDefault();
+          onClickLeft(event);
+        }}
+      >
+        <Icon fontSize={22}>
+          <SlArrowLeft />
+        </Icon>
+      </Button>
+    </Box>
+  );
+  const rightArrowButton = (
+    <Box>
+      <Button
+        _hover={{ bgColor: "red.400" }}
+        bgColor={"gray.200"}
+        onClick={(event) => {
+          event.preventDefault();
+          onClickRight(event);
+        }}
+      >
+        <Icon fontSize={22}>
+          <SlArrowRight />
+        </Icon>
+      </Button>
+    </Box>
+  );
 
   if (ENDPAGE == 1) {
     return;
@@ -185,17 +231,14 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
     return PagesIndex(1, ENDPAGE);
   } else if (!SHOWLEFTELIPSIS && SHOWRIGHTELIPSIS) {
     return (
-      <Flex>
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickLeft(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowLeft />
-          </Icon>
-        </Button>
+      <Flex
+        flex={1}
+        alignContent={"center"}
+        textAlign={"center"}
+        margin={"auto"}
+        left={"500px"}
+      >
+        {leftArrowButton}
         <Box>
           <PagesIndex
             page={+page}
@@ -214,32 +257,22 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
           setPage={setPage}
           onSubmit={onSubmit}
         />
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickRight(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowRight />
-          </Icon>
-        </Button>
+        {rightArrowButton}
       </Flex>
     );
   } else if (SHOWLEFTELIPSIS && !SHOWRIGHTELIPSIS) {
     return (
       <Flex>
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickLeft(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowLeft />
-          </Icon>
-        </Button>
-        <Box>{1}</Box>
+        {leftArrowButton}
+        <Box>
+          <PagesIndex
+            page={+page}
+            start={1}
+            end={2 * SIBLINGPAGENUMBER + 1}
+            setPage={setPage}
+            onSubmit={onSubmit}
+          />
+        </Box>
         <Box>
           <ElipsisOrInput setPage={setPage} onSubmit={onSubmit} />
         </Box>
@@ -252,31 +285,13 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
             onSubmit={onSubmit}
           />
         </Box>
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickRight(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowRight />
-          </Icon>
-        </Button>
+        {rightArrowButton}
       </Flex>
     );
   } else {
     return (
       <Flex justifyContent={"center"}>
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickLeft(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowLeft />
-          </Icon>
-        </Button>
+        {leftArrowButton}
         <PagePill
           page={+page}
           pageNumberDisplay={1}
@@ -306,16 +321,7 @@ const SearchPagination: React.FC<SearchPaginationProps> = ({
           onSubmit={onSubmit}
         />
 
-        <Button
-          onClick={(event) => {
-            event.preventDefault();
-            onClickRight(event);
-          }}
-        >
-          <Icon fontSize={22}>
-            <SlArrowRight />
-          </Icon>
-        </Button>
+        {rightArrowButton}
       </Flex>
     );
   }

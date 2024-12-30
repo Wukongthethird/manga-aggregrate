@@ -91,7 +91,7 @@ const SearchPage: React.FC = () => {
   console.log("pageFunction", page);
 
   return (
-    <Box alignContent={"center"}>
+    <Box alignContent={"center"} margin={"auto"}>
       <SearchBar onSubmit={onSearchSubmit} />
       {loading && (
         <Center>
@@ -106,15 +106,32 @@ const SearchPage: React.FC = () => {
       )}
 
       {searchResult.length != 0 && !loading && (
-        <Box alignContent={"center"}>
-          <SearchPagination
-            setPage={setPage}
-            onSubmit={onPageSubmit}
-            perPage={perPage}
-            totalHits={totalHits}
-            page={page}
-          />
-          <SearchResults searchResult={searchResult} />
+        <Box width={"100%"} margin="auto">
+          <Center>
+            <Box>
+              <SearchPagination
+                setPage={setPage}
+                onSubmit={onPageSubmit}
+                perPage={perPage}
+                totalHits={totalHits}
+                page={page}
+              />
+            </Box>
+          </Center>
+          <Box>
+            <SearchResults searchResult={searchResult} />
+          </Box>
+          <Center>
+            <Box>
+              <SearchPagination
+                setPage={setPage}
+                onSubmit={onPageSubmit}
+                perPage={perPage}
+                totalHits={totalHits}
+                page={page}
+              />
+            </Box>
+          </Center>
         </Box>
       )}
     </Box>
